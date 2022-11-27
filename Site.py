@@ -2,12 +2,14 @@ import Lock
 from const import R_LOCK, RW_LOCK
 
 class Site:
-    def __init__(self) -> None:
+    def __init__(self, variables) -> None:
         self.lockTable = {}
         self.curWrites = {}
         self.curReads = {}
         self.committedVariables = {}
-
+        for var in variables:
+            self.committedVariables[var.name] = var
+        
         self.isActive = False
         self.recoveredTime = 0
 
@@ -34,6 +36,9 @@ class Site:
         self.curWrites = {}
         self.lockTable = {}
     
+    def ifContains(self,x):
+        return x in self.committedVariables
+
     def if_available_to_read(self, transaction, x, ifLockNeeded):
         """
         Check if variable x is ready to read.
