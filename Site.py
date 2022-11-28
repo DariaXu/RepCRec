@@ -1,5 +1,8 @@
-import Lock
+from Lock import Lock
 from const import R_LOCK, RW_LOCK
+import logging
+
+logger = logging.getLogger(__name__)
 
 class Site:
     def __init__(self, variables) -> None:
@@ -23,11 +26,15 @@ class Site:
 
         self.isActive = True
         self.recoveredTime = tick
+        # logger.info(f"{tick}: Recovered Site.")
 
-    def fail(self):
+    def fail(self, tick):
         """
         Fail this site, and notify all transactions that are accessing this site to abort,
-        clear the curReads, the curWrites and the lock table.
+        clear the curReads, the curWrites and the lock table
+        .
+        Parameters:
+		    tick: The time this site fails
         """
         self.isActive = False
         # TODO: notify notify all transactions that are accessing this site(curReads and curWrites) to abort
@@ -35,6 +42,7 @@ class Site:
         self.curReads = {}
         self.curWrites = {}
         self.lockTable = {}
+        # logger.info(f"{tick}: Failed Site.")
     
     def ifContains(self,x):
         return x in self.committedVariables
@@ -98,30 +106,27 @@ class Site:
 		    x: name of the variable to lock
 		    lock_state: the type of lock
         """
-        # if lock_state == R_LOCK:
-        #     if not self._if_available_to_read(transaction, x):
-        #         return False
-        # elif lock_state == RW_LOCK:
-        #     if not self._if_available_to_write(transaction, x):
-        #         return False
 
         lockObj = Lock(lock_state, transaction)
         if x not in self.lockTable:
             self.lockTable[x] = [lockObj]
+            logger.info(f"{transaction} successfully locked {x} with {lock_state}.")
             return
         
         locks = self.lockTable[x]
         if lockObj in locks:
-            # already locked
+            logger.info(f"{transaction} already locked {x} with {lock_state}.")
             return
         
         if lock_state == RW_LOCK:
             # remove read lock from the same transaction
             newLocks = [lock for lock in locks if not (lock.state == R_LOCK and lock.transaction == transaction)]
             self.lockTable[x] = newLocks
+            logger.info(f"{transaction} removed {R_LOCK} on {x}.")
 
         # lock x
         self.lockTable[x].append(lockObj)
+        logger.info(f"{transaction} successfully locked {x} with {lock_state}.")
 
                 
     

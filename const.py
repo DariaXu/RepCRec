@@ -5,3 +5,6 @@ _LOCK_STATES = {
 	R_LOCK: 'R',
 	RW_LOCK: 'W',
 }
+
+NUM_OF_VARIABLES = 20
+NUM_OF_SITES = 10
