@@ -1,5 +1,8 @@
-import Site
-import Variable
+from Site import Site
+from Variable import Variable
+import logging
+
+logger = logging.getLogger(__name__)
 
 class DataMgr(object):
     def __init__(self, numOfSites, numOfVariable) -> None:
@@ -13,7 +16,7 @@ class DataMgr(object):
             evenVars = [Variable("x."+str(i), 10*i, site) for i in range(1,numOfVariable+1) if not i%2]
             oddVars = [Variable("x."+str(i), 10*i) for i in range(1,numOfVariable+1) if i%2 and (i%10 +1) == site]
             curSite = Site(evenVars+oddVars)
-            self.sites[site] = curSite
+            self.sites[str(site)] = curSite
 
     def recover(self, siteNum, tick):
         """
@@ -23,17 +26,18 @@ class DataMgr(object):
             siteNum: Site number
             tick: cur tick
         """
-
         self.sites[siteNum].recover(tick)
+        logger.info(f"{tick}: Recovered Site {siteNum}")
 
-    def fail(self, siteNum):
+    def fail(self, siteNum, tick):
         """
         Fail site
 
         Parameters:
             siteNum: Site number
         """
-        self.sites[siteNum].fail()
+        self.sites[siteNum].fail(tick)
+        logger.info(f"{tick}: Failed Site {siteNum}")
 
     def get_site_index(x): 
         """
@@ -75,7 +79,7 @@ class DataMgr(object):
         3)	Otherwise, return the index if the site is up.
         """
 
-        varNum = int(x[x.find('.')+1:])
+        # varNum = int(x[x.find('.')+1:])
         siteIndex = self.get_site_index(x)
         if siteIndex:
             # odd variable only on one site
@@ -85,8 +89,8 @@ class DataMgr(object):
             return []
         
         # even variable, can have multiple copies
-        avaliableSites = self.get_available_sites()
-        allSites = [site for site in avaliableSites if site.ifContains(x)]
+        availableSites = self.get_available_sites()
+        allSites = [site for site in availableSites if site.ifContains(x)]
 
         return allSites
     
