@@ -1,9 +1,9 @@
 from Data_Mgr import DataMgr
 from Transation_Mgr import TransactionMgr
-from const import NUM_OF_SITES, NUM_OF_VARIABLES
+from const import NUM_OF_SITES, NUM_OF_VARIABLES, READ, WRITE
 import argparse
 import logging
-import datetime
+from pathlib import Path
 
 logger = logging.getLogger(__name__)
 
@@ -29,6 +29,7 @@ def run(executions, dataMgr, transMgr):
         "beginRO": transMgr.start_RO_transaction,
         "fail": dataMgr.fail,
         "recover": dataMgr.recover,
+        READ: transMgr.read,
     }
 
     tick = 0
@@ -48,15 +49,17 @@ def run(executions, dataMgr, transMgr):
 
 def main():
     parser = argparse.ArgumentParser(description='Replicated Concurrency Control and Recovery.')
-    parser.add_argument('testFile', nargs="?", default="tests/test3.txt", help='Test File')
+    parser.add_argument('testFile', nargs="?", default="tests/test2.txt", help='Test File')
     args = parser.parse_args()
 
-    curDatetime = datetime.datetime.now().strftime("%Y-%m-%d-%H%M%S")
+    # curDatetime = datetime.datetime.now().strftime("%Y-%m-%d-%H%M%S")
+    testName = Path(args.testFile).stem
     logging.basicConfig(
-        level= logging.INFO,
+        # level= logging.INFO,
+        level= logging.DEBUG,
         format='%(levelname)s: [%(module)s] %(message)s',
         handlers=[
-            logging.FileHandler(f"logs/{curDatetime}.log"),
+            logging.FileHandler(f"logs/{testName}.log"),
             logging.StreamHandler()
         ]
     )

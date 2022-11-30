@@ -6,3 +6,6 @@ class Variable:
         # if this variable is not a copy, onSite will be None; 
         # otherwise, onSite will be the site number where this copy is on 
         self.onSite = onSite
+
+    def __str__(self) -> str:
+        return f"{self.name}: {self.value}"

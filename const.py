@@ -1,10 +1,8 @@
-_LOCK_MODES = range(2)
-R_LOCK, RW_LOCK = _LOCK_MODES
-
-_LOCK_STATES = {
-	R_LOCK: 'R',
-	RW_LOCK: 'W',
-}
+R_LOCK = 'R_Lock'
+RW_LOCK = 'RW_Lock',
 
 NUM_OF_VARIABLES = 20
 NUM_OF_SITES = 10
+
+READ = "R"
+WRITE = "W"
