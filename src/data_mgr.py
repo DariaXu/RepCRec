@@ -184,13 +184,10 @@ class DataMgr(object):
             logger.debug(f"{transaction.name} fail to read on variable {x}! No active sites.")
             return (False, [])
 
-        if self.get_site_index(x) != None:
-            # odd variable
-            return (True, sites[0].read(transaction, x))
-
         blocked = []
         for site in sites:
-            if site.if_available_to_read(transaction, x):
+            if self.get_site_index(x) != None or site.if_available_to_read(transaction, x):
+                # for not replicated variable, no need the check the commit time(if_available_to_read)
                 blocked = site.lock_variable(transaction, x, LockState.R_LOCK, tick)
                 if not blocked:
                     return (True, site.read(transaction, x))
@@ -253,20 +250,22 @@ class DataMgr(object):
         for site in sites:
             site.abort(transaction)
 
-    def commit_on_all_sites(self, transaction):
+    def commit_on_all_sites(self, transaction, tick):
         """
         Request to commit transaction.
 
         Parameters
         -----------
         transaction: transaction object
+        tick: int
+            Current tick
         """
 
         logger.debug(f"Commit {transaction.name} on all sites.")
 
         sites = self.get_available_sites()
         for site in sites:
-            site.commit(transaction)
+            site.commit(transaction, tick)
 
 
     def dump_all_sites(self):

@@ -90,8 +90,8 @@ class Site:
         if x not in self.committedVariables:
             return False
 
-        if self.recoveredTime > transaction.startTime:
-            return False
+        # if self.recoveredTime > transaction.startTime:
+        #     return False
 
         if self.committedVariables[x].lastCommittedTime < self.recoveredTime:
             return False
@@ -380,13 +380,15 @@ class Site:
 
         logger.debug(f"Site {self.name} - {transaction.name} aborted.")
 
-    def commit(self, transaction):
+    def commit(self, transaction, tick):
         """
         Transaction commit. 
 
         Parameters
         -----------
         transaction: transaction object
+        tick: int
+            Current tick
         """
         
         if transaction in self.curReads:
@@ -394,6 +396,7 @@ class Site:
         if transaction in self.curWrites:
             allWritesDict = self.curWrites[transaction]
             for x, v in allWritesDict.items():
+                v.lastCommittedTime = tick
                 self.committedVariables[x] = v
 
             self.curWrites.pop(transaction)
