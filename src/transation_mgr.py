@@ -201,7 +201,7 @@ class TransactionMgr(object):
             Current tick
         """
         logger.debug(f"{tick}: Receive request to commit {t}.")
-        self.dataMgr.commit_on_all_sites(t)
+        self.dataMgr.commit_on_all_sites(t, tick)
         self.transactions.pop(t.name)
 
         if self.waitLists.get_waitObj_of_t(t):

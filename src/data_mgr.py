@@ -250,20 +250,22 @@ class DataMgr(object):
         for site in sites:
             site.abort(transaction)
 
-    def commit_on_all_sites(self, transaction):
+    def commit_on_all_sites(self, transaction, tick):
         """
         Request to commit transaction.
 
         Parameters
         -----------
         transaction: transaction object
+        tick: int
+            Current tick
         """
 
         logger.debug(f"Commit {transaction.name} on all sites.")
 
         sites = self.get_available_sites()
         for site in sites:
-            site.commit(transaction)
+            site.commit(transaction, tick)
 
 
     def dump_all_sites(self):
