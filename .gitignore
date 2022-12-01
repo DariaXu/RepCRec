@@ -1,4 +1,6 @@
 .DS_Store
 logs/
+output/
 __pycache__/
+script/__pycache__/
 tests/test.txt
