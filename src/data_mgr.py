@@ -184,13 +184,10 @@ class DataMgr(object):
             logger.debug(f"{transaction.name} fail to read on variable {x}! No active sites.")
             return (False, [])
 
-        if self.get_site_index(x) != None:
-            # odd variable
-            return (True, sites[0].read(transaction, x))
-
         blocked = []
         for site in sites:
-            if site.if_available_to_read(transaction, x):
+            if self.get_site_index(x) != None or site.if_available_to_read(transaction, x):
+                # for not replicated variable, no need the check the commit time(if_available_to_read)
                 blocked = site.lock_variable(transaction, x, LockState.R_LOCK, tick)
                 if not blocked:
                     return (True, site.read(transaction, x))

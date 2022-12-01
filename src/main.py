@@ -91,7 +91,7 @@ def run(executions, dataMgr, transMgr):
 
 def main():
     parser = argparse.ArgumentParser(description='Replicated Concurrency Control and Recovery.')
-    parser.add_argument('testFile', nargs="?", default="tests/test8.txt", help='Test File')
+    parser.add_argument('testFile', nargs="?", default="tests/test17.txt", help='Test File')
     args = parser.parse_args()
     
     utils.mkdir("./logs")
