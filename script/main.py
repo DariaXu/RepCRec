@@ -4,7 +4,7 @@ from const import NUM_OF_SITES, NUM_OF_VARIABLES, OperationType, ResultType
 import argparse
 import logging
 from pathlib import Path
-import utils
+import utils as utils
 
 logger = logging.getLogger(__name__)
 
@@ -95,6 +95,7 @@ def main():
     args = parser.parse_args()
     
     utils.mkdir("./logs")
+    utils.mkdir("./output")
     # curDatetime = datetime.datetime.now().strftime("%Y-%m-%d-%H%M%S")
     testName = Path(args.testFile).stem
 
