@@ -4,6 +4,30 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+class Variable:
+    def __init__(self, name, value, onSite=None) -> None:
+        """
+        Initialize the Variable.
+
+        Parameters
+        -----------
+        name: str 
+            Variable Name.
+        value: str 
+            Variable value.
+        onSite: int
+            If this variable is not a replicated variable, onSite should be None; 
+            otherwise, onSite will be the site number where this copy is on 
+        """
+
+        self.name = name
+        self.value = value
+        self.lastCommittedTime = -1
+        self.onSite = onSite
+
+    def __str__(self) -> str:
+        return f"{self.name}: {self.value}"
+
 class Site:
     def __init__(self, name, variables) -> None:
         """
@@ -25,6 +49,7 @@ class Site:
         for var in variables:
             self.committedVariables[var.name] = var
         
+        self.copies = {}
         self.isActive = False
         self.recoveredTime = -1
 
@@ -33,6 +58,20 @@ class Site:
 
     def ifContains(self,x):
         return x in self.committedVariables
+
+    def request_copy_for_RO(self, transaction):
+        """
+        Store copy of variables.
+
+        Parameters
+        -----------
+        transaction: Transaction Object
+        """
+        if transaction.name not in self.copies:
+            self.copies[transaction.name] = {}
+        self.copies[transaction.name] = self.committedVariables.copy()
+
+        logger.debug(f"Stored copy for RO transaction {transaction}")
 
     def if_available_to_read(self, transaction, x):
         """
@@ -55,6 +94,25 @@ class Site:
             return False
 
         if self.committedVariables[x].lastCommittedTime < self.recoveredTime:
+            return False
+
+        return True
+
+    def if_available_to_read_only(self, transaction, x):
+        """
+        Check if variable x is ready to read only. 
+
+        Parameters
+        -----------
+        transaction: Transaction Object
+		x: str
+            Variable name 
+            
+	    Returns: bool
+        -----------
+		True if x can be read only on this site; False otherwise
+        """
+        if self.recoveredTime > transaction.startTime:
             return False
 
         return True
@@ -220,6 +278,36 @@ class Site:
         self.lockTable = {}
         # logger.info(f"{tick}: Failed Site.")
 
+    def read_only(self, transaction, x):
+        """
+        Read only x. 
+
+        Parameters
+        -----------
+        transaction: transaction object
+        x: str
+            Variable name 
+
+        Returns
+        -----------
+        The value of x; None if read failed.
+        """
+        logger.debug(f"Site {self.name} - {transaction.name} read only {x}.")
+        if transaction.name not in self.copies:
+            logger.error(f"Site {self.name} - Failed to read only: There is no copy for {transaction.name}!! {self.copies}")
+            return None
+
+        varCopy = self.copies[transaction.name]
+
+        if x not in varCopy:
+            logger.error(f"Site {self.name} - Failed to read only: {x} is not in the copy!! {varCopy}")
+            return None
+
+        if transaction not in self.curReads:
+            self.curReads.append(transaction)
+
+        return varCopy[x]
+
     def read(self, transaction, x):
         """
         Read x. 
@@ -265,7 +353,7 @@ class Site:
         if transaction not in self.curWrites:
             self.curWrites[transaction] = {}
 
-        self.curWrites[transaction][x] = val
+        self.curWrites[transaction][x] = Variable(x, val)
 
         logger.info(f"Site {self.name}: {transaction.name} write {x}={val}")
 
@@ -282,6 +370,9 @@ class Site:
             self.curReads.remove(transaction)
         if transaction in self.curWrites:
             self.curWrites.pop(transaction)
+
+        if transaction.name in self.copies:
+            self.copies.pop(transaction.name)
 
         for x, lockObjs in self.lockTable.items():
             newLockLst = [lock for lock in lockObjs if lock.transaction != transaction]
@@ -303,9 +394,12 @@ class Site:
         if transaction in self.curWrites:
             allWritesDict = self.curWrites[transaction]
             for x, v in allWritesDict.items():
-                self.committedVariables[x].value = v
+                self.committedVariables[x] = v
 
             self.curWrites.pop(transaction)
+
+        if transaction.name in self.copies:
+            self.copies.pop(transaction.name)
 
         for x, lockObjs in self.lockTable.items():
             newLockLst = [lock for lock in lockObjs if lock.transaction != transaction]

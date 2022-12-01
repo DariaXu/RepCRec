@@ -1,33 +1,9 @@
-from Site import Site
+from Site import Site, Variable
 from const import LockState
 import logging
 import re
 
 logger = logging.getLogger(__name__)
-
-class Variable:
-    def __init__(self, name, value, onSite=None) -> None:
-        """
-        Initialize the Variable.
-
-        Parameters
-        -----------
-        name: str 
-            Variable Name.
-        value: str 
-            Variable value.
-        onSite: int
-            If this variable is not a replicated variable, onSite should be None; 
-            otherwise, onSite will be the site number where this copy is on 
-        """
-
-        self.name = name
-        self.value = value
-        self.lastCommittedTime = -1
-        self.onSite = onSite
-
-    def __str__(self) -> str:
-        return f"{self.name}: {self.value}"
 
 class DataMgr(object):
     def __init__(self, numOfSites, numOfVariable) -> None:
@@ -169,13 +145,15 @@ class DataMgr(object):
 
         if self.get_site_index(x) != None:
             # odd variable
-            return sites[0].read(transaction, x)
+            return sites[0].read_only(transaction, x)
         
         # Replicated variable
         for site in sites:
-            if site.if_available_to_read(transaction, x):
+            # if site recovered after read only transaction begin, there should be no copies on that site
+            # if_available_to_read_only might be redundant 
+            if site.if_available_to_read_only(transaction, x):
                 # read the first available  
-                return site.read(transaction, x)
+                return site.read_only(transaction, x)
 
         logger.debug(f"{transaction.name} fail to read only on variable {x}! Can't be read on sites {sites}.")
         return None
@@ -205,6 +183,10 @@ class DataMgr(object):
             # All sites 
             logger.debug(f"{transaction.name} fail to read on variable {x}! No active sites.")
             return (False, [])
+
+        if self.get_site_index(x) != None:
+            # odd variable
+            return (True, sites[0].read(transaction, x))
 
         blocked = []
         for site in sites:
