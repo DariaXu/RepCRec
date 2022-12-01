@@ -155,7 +155,7 @@ class Site:
         if blockedBy:
             return blockedBy
 
-        lockObj = Lock(lock_state, transaction, tick)
+        lockObj = Lock(lock_state, transaction)
         if x not in self.lockTable:
             self.lockTable[x] = [lockObj]
             logger.debug(f"Site {self.name} - {transaction.name} successfully locked {x} with {lock_state}.")
@@ -165,6 +165,13 @@ class Site:
         if lockObj in locks:
             logger.debug(f"Site {self.name} - {transaction.name} already locked {x} with {lock_state}.")
             return blockedBy
+
+        if lock_state == LockState.R_LOCK:
+            tempLockObj = Lock(LockState.RW_LOCK, transaction)
+            if tempLockObj in locks:
+                logger.debug(f"Site {self.name} - {transaction.name} already locked {x} with {LockState.RW_LOCK}.")
+                return blockedBy 
+
         
         if lock_state == LockState.RW_LOCK:
             # remove read lock from the same transaction

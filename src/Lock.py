@@ -1,5 +1,5 @@
 class Lock(object):
-    def __init__(self, state, transaction, tick) -> None:
+    def __init__(self, state, transaction) -> None:
         self.state = state
         # transaction object
         self.transaction = transaction
@@ -12,4 +12,5 @@ class Lock(object):
         yield "linedUp", self.linedUp
 
     def __eq__(self, other): 
-        return isinstance(other, type(self)) and tuple(self) == tuple(other)
+        return isinstance(other, type(self)) \
+            and self.state == other.state and self.transaction == other.transaction

@@ -27,7 +27,7 @@ def process_input(file):
             openB = line.find('(')
             closeB = line.find(')')
             operation = line[:openB]
-            vars = line[openB+1:closeB].split(',')
+            vars = [v.strip() for v in line[openB+1:closeB].split(',')]
             executions.append((operation, vars))
 
     return executions
@@ -91,7 +91,7 @@ def run(executions, dataMgr, transMgr):
 
 def main():
     parser = argparse.ArgumentParser(description='Replicated Concurrency Control and Recovery.')
-    parser.add_argument('testFile', nargs="?", default="tests/test21.txt", help='Test File')
+    parser.add_argument('testFile', nargs="?", default="tests/test3.txt", help='Test File')
     args = parser.parse_args()
     
     utils.mkdir("./logs")
