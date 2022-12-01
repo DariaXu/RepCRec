@@ -1,11 +1,23 @@
 from const import OperationType, ResultType
-from Waitlist_Mgr import WaitList, WaitObj
+from waitlist_mgr import WaitList, WaitObj
 import logging
 
 logger = logging.getLogger(__name__)
 
 class Transaction(object):
     def __init__(self, name, startTime, readOnly) -> None:
+        """
+        Initialize Transaction.
+
+        Parameters
+        -----------
+        name: str 
+            Transaction Name.
+        startTime: int 
+            Transaction start time.
+        readOnly: bool
+            If this transaction is read only transaction.
+        """
         self.name = name
         self.startTime = startTime
         self.readOnly = readOnly
@@ -43,8 +55,10 @@ class TransactionMgr(object):
         """
         Create a transaction object, initialize it with the transaction name and current time as the start time.
 
-        Parameters:
-            t: transaction name
+        Parameters
+        -----------
+        t: str
+            Transaction name
         """
         self.transactions[t] = Transaction(t, tick, readOnly=False)
         logger.debug(f"{tick}: Start transaction {t}")
@@ -53,8 +67,10 @@ class TransactionMgr(object):
         """
         Create a RO transaction object, initialize it with the transaction name and current time as the start time.
 
-        Parameters:
-            t: transaction name
+        Parameters
+        -----------
+        t: str
+            Transaction name
         """
         self.transactions[t] = Transaction(t, tick, readOnly=True)
         logger.debug(f"{tick}: Start RO transaction {t}")
@@ -63,11 +79,24 @@ class TransactionMgr(object):
         """
         Process read request.
 
-        Parameters:
-            t: transaction name
-            x: name of the variable to write on
-            tick: current tick
+        Parameters
+        -----------
+        t: str
+            Transaction name
+        x: str
+            Name of the variable to write on
+        tick: int
+            Current tick
+
+        Return: ResultType Enum
+        -----------
+        Type of return
         """
+        if t not in self.transactions:
+            # abort because of deadlock
+            logger.debug(f"{t} skip end because aborted due to deadlock")
+            return ResultType.STOP
+
         logger.debug(f"{tick}: {t} tries to read {x}...")
 
         transaction = self.transactions[t]
@@ -105,12 +134,26 @@ class TransactionMgr(object):
         """
         Process write request.
 
-        Parameters:
-            t: transaction name
-            x: name of the variable to write on
-            val: the value to write
-            tick: current tick
+        Parameters
+        -----------
+        t: str
+            Transaction name
+        x: str
+            Name of the variable to write on
+        val: str
+            The value to write
+        tick: int
+            Current tick
+
+        Return: ResultType Enum
+        -----------
+        Type of return
         """
+        if t not in self.transactions:
+            # abort because of deadlock
+            logger.debug(f"{t} skip end because aborted due to deadlock")
+            return ResultType.STOP
+            
         logger.debug(f"{tick}: {t} tries to write {x}: {val}...")
 
         transaction = self.transactions[t]
@@ -131,38 +174,59 @@ class TransactionMgr(object):
         Process abort request.
         
         Parameters:
-            t: transaction object
-            tick: current tick
+        -----------
+        t: str
+            Transaction object
+        tick: int
+            Current tick
         """
         logger.debug(f"{tick}: Receive request to abort {t}.")
         self.dataMgr.abort_on_all_sites(t)
         self.transactions.pop(t.name)
         self.waitLists.remove_waitObj_of_t(t)
+        logger.info(f"Abort: {t.name}")
 
-    # def get_next_waitList(self):
-    #     """
-    #     Get next transaction in the wait list.
+    def commit(self, t, tick):
+        """
+        Commit transaction
         
-    #     Return:
-    #         Return next in line operation with parameters; if no transaction is waiting, return None.
-    #     """
-    #     if not self.waitLists:
-    #         return None
+        Parameters:
+        -----------
+        t: str
+            Transaction object
+        tick: int
+            Current tick
+        """
+        logger.debug(f"{tick}: Receive request to commit {t}.")
+        self.dataMgr.commit_on_all_sites(t)
+        self.transactions.pop(t.name)
 
-    #     nextOp, args = self.waitLists[0]
-    #     self.waitLists.pop(0)
+        if self.waitLists.get_waitObj_of_t(t):
+            logger.error(f"{tick}: {t} There are pending executions, please check!")
 
-    #     return nextOp, args
+        logger.info(f"Commit: {t.name}")
 
-    # def add_to_waitList(self, t, op, args, blockedBy):
-    #     """
-    #     Add operation to wait list.
+    def end(self, t, tick):
+        """
+        End Transaction
         
-    #     Parameters:
-    #         t: transaction name
-    #         op: operation
-    #         args: arguments list
-    #         blockedBy: list of transactions blocking t
-    #     """
-    #     self.transactions[t].isBlocked = True
+        Parameters:
+        -----------
+        t: str
+            Transaction name
+        tick: int
+            Current tick
+        """
+        if t not in self.transactions:
+            # abort because of deadlock
+            logger.debug(f"{t} skip end because aborted due to deadlock")
+            return 
+        else:
+            transaction = self.transactions[t]
+        if transaction.abort:
+            self.abort(transaction, tick)
+        else:
+            self.commit(transaction, tick)
         
+    def dump(self):
+        self.dataMgr.dump_all_sites()

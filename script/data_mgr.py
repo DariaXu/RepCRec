@@ -7,11 +7,23 @@ logger = logging.getLogger(__name__)
 
 class Variable:
     def __init__(self, name, value, onSite=None) -> None:
+        """
+        Initialize the Variable.
+
+        Parameters
+        -----------
+        name: str 
+            Variable Name.
+        value: str 
+            Variable value.
+        onSite: int
+            If this variable is not a replicated variable, onSite should be None; 
+            otherwise, onSite will be the site number where this copy is on 
+        """
+
         self.name = name
         self.value = value
         self.lastCommittedTime = -1
-        # if this variable is not a copy, onSite will be None; 
-        # otherwise, onSite will be the site number where this copy is on 
         self.onSite = onSite
 
     def __str__(self) -> str:
@@ -19,10 +31,25 @@ class Variable:
 
 class DataMgr(object):
     def __init__(self, numOfSites, numOfVariable) -> None:
-        self.sites = {}
-        self.init_sites(numOfSites, numOfVariable)
+        """
+        Initialize the Data Manger.
 
-    def init_sites(self, numOfSites, numOfVariable):
+        Parameters
+        -----------
+        numOfSites: int 
+            Total number of sites.
+        numOfVariable: str 
+            Total number of variable.
+        """
+        self.sites = {}
+        self._init_sites(numOfSites, numOfVariable)
+
+    def _init_sites(self, numOfSites, numOfVariable):
+        """
+        Initialize sites.
+        The odd indexed variables are at one site each. Even indexed variables are at all sites. 
+        Each variable xi is initialized to the value 10i (10 times i).
+        """
         oddVars = [Variable("x"+str(i), 10*i) for i in range(1,numOfVariable+1) if not i%2]
 
         for site in range(1, numOfSites+1):
@@ -32,36 +59,18 @@ class DataMgr(object):
             curSite.isActive = True
             self.sites[str(site)] = curSite
 
-    def recover(self, siteNum, tick):
-        """
-        Recover site
-
-        Parameters:
-            siteNum: Site number
-            tick: cur tick
-        """
-        self.sites[siteNum].recover(tick)
-        logger.debug(f"{tick}: Recovered Site {siteNum}")
-
-    def fail(self, siteNum, tick):
-        """
-        Fail site
-
-        Parameters:
-            siteNum: Site number
-        """
-        self.sites[siteNum].fail(tick)
-        logger.debug(f"{tick}: Failed Site {siteNum}")
-
     def get_site_index(self, x): 
         """
-        Check the index of the variable. If even, return None; 
-        if odd, return 1+index%10
+        Get the site index
 
-        Parameters:
-            x: variable name(with information of variable index)
-        Returns: 
-            None if x is on multiple sites; index if x is not replicated 
+        Parameters
+        -----------
+        x: str
+            variable name
+
+        Returns: int 
+        -----------
+        None if x is on multiple sites; site index if x is not replicated 
         """
         siteNum = int(re.split('(\d+)',x)[1])
         # siteNum = int(x[x.find('.')+1:])
@@ -75,8 +84,9 @@ class DataMgr(object):
         """
         Return a list of sites that are up.
 
-        Returns: 
-            A list of available sites.
+        Returns: list
+        -----------
+        List of available sites.
         """
 
         return [site for site in self.sites.values() if site.isActive]
@@ -85,10 +95,12 @@ class DataMgr(object):
         """
         Get all sites that is active and contain x.
 
-        Parameters:
+        Parameters
+        -----------
             x: variable name
-        Returns:
-            The list of sites that are up and contain x.
+        Returns: list
+        -----------
+        The list of sites that are up and contain x.
         """
 
         # varNum = int(x[x.find('.')+1:])
@@ -105,16 +117,48 @@ class DataMgr(object):
         allSites = [site for site in availableSites if site.ifContains(x)]
 
         return allSites
+
+    def recover(self, siteNum, tick):
+        """
+        Recover site
+
+        Parameters
+        -----------
+        siteNum: int 
+            Site number
+        tick: int
+            current tick
+        """
+        self.sites[siteNum].recover(tick)
+        logger.debug(f"{tick}: Recovered Site {siteNum}")
+
+    def fail(self, siteNum, tick):
+        """
+        Fail site
+
+        Parameters
+        -----------
+        siteNum: int 
+            Site number
+        tick: int
+            current tick
+        """
+        self.sites[siteNum].fail(tick)
+        logger.debug(f"{tick}: Failed Site {siteNum}")
     
     def request_read_only(self, transaction, x):
         """
         Request read only operation.
 
-        Parameters:
-            transaction: transaction object
-            x: variable name
-        Returns:
-            The value of variable x if read successfully; None otherwise
+        Parameters
+        -----------
+        transaction: Transaction Object
+		x: str
+            Variable name 
+
+        Returns: bool
+        -----------
+        The value of variable x if read successfully; None otherwise
         """
         logger.debug(f"{transaction.name} requests read only on variable {x}.")
         sites = self.get_available_sites_for_variable(x)
@@ -140,12 +184,19 @@ class DataMgr(object):
         """
         Request read operation.
 
-        Parameters:
-            transaction: transaction object
-            x: variable name
-            tick: current tick
-        Returns:
-            The value of variable x if read successfully; None otherwise
+        Parameters
+        -----------
+        transaction: Transaction Object
+		x: str
+            Variable name 
+        tick: int
+            current tick
+
+        Returns: tuple (bool, list/str)
+        -----------
+        First element is the boolean showing whether read successfully processed.
+        For Second element, if read success, it is the read value;
+        if read fail, it is the a list of lock objects blocking this read.
         """
 
         logger.debug(f"{transaction.name} requests read on variable {x}.")
@@ -170,12 +221,20 @@ class DataMgr(object):
         Request write operation.
 
         Parameters:
-            transaction: transaction object
-            x: name of the variable to write
-            val: the value to write
-            tick: current tick
-        Returns:
-            True if success; false if fail
+        -----------
+        transaction: Transaction Object
+		x: str
+            Variable name
+        val: str
+            The value to write
+        tick: int
+            Current tick
+
+        Returns: tuple (bool, list)
+        -----------
+        First element is the boolean showing whether write successfully processed.
+        For Second element, if write success, it is a empty list;
+        if write fail, it is the a list of lock objects blocking this write.
         """
         logger.debug(f"{transaction.name} requests write on variable {x}: {val}.")
         sites = self.get_available_sites_for_variable(x)
@@ -201,8 +260,9 @@ class DataMgr(object):
         """
         Request to abort transaction.
 
-        Parameters:
-            transaction: transaction object
+        Parameters
+        -----------
+        transaction: transaction object
         """
 
         logger.debug(f"Abort {transaction.name} on all sites.")
@@ -210,3 +270,32 @@ class DataMgr(object):
         sites = self.get_available_sites()
         for site in sites:
             site.abort(transaction)
+
+    def commit_on_all_sites(self, transaction):
+        """
+        Request to commit transaction.
+
+        Parameters
+        -----------
+        transaction: transaction object
+        """
+
+        logger.debug(f"Commit {transaction.name} on all sites.")
+
+        sites = self.get_available_sites()
+        for site in sites:
+            site.commit(transaction)
+
+
+    def dump_all_sites(self):
+        """ dump """
+        for name, site in self.sites.items():
+            variables = list(site.committedVariables.keys())
+            num = sorted([int(v[1:]) for v in variables])
+            sortedVars = ['x'+ str(n) for n in num]
+
+            strVars = f"Site {name} - "
+            for v in sortedVars:
+                strVars += str(site.committedVariables[v]) + ", "
+
+            logger.info(strVars[:-2])
