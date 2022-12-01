@@ -1,0 +1,13 @@
+// Make sure that when all sites are locked a transaction will block.
+begin(T1)
+begin(T2)
+// x2 is now locked everywhere
+W(T2, x2, 8) 
+// T1 should block
+W(T1, x2, 6) 
+end(T2)
+end(T1)
+dump()
+// ---
+// assertCommitted(T1)
+// assertCommitted(T2)

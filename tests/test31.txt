@@ -1,0 +1,27 @@
+// Test that sites that are down on end() will cause failure for non read-only
+// transactions.
+begin(T1)
+beginRO(T2)
+R(T2, x1)
+W(T1, x1, 81)
+begin(T3)
+R(T3, x3)
+begin(T4)
+R(T4, x5); W(T4, x5, 9)
+fail(2)
+// should abort since 2 is down
+end(T1) 
+fail(4)
+// should abort since 4 is down
+end(T3) 
+fail(6)
+// should abort since 6 is down
+end(T4) 
+// should commit since read-only
+end(T2) 
+dump()
+// ---
+// assertAborted(T1)
+// assertCommitted(T2)
+// assertAborted(T3)
+// assertAborted(T4)
