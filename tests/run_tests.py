@@ -12,10 +12,10 @@ for test in numOfTest:
     if cmd != 0:
         print(f"{testFile} Failed!!!!")
     else:
-        outFile = "output\\"+str(test)+ ".out"
-        correctOut ="tests\\correct_output\\"+str(test)+ ".out"
+        outFile = "output\\test"+str(test)+ ".out"
+        correctOut ="tests\\correct_output\\test"+str(test)+ ".out"
 
         if exists(correctOut) and not filecmp.cmp(outFile, correctOut):
             print(f"{outFile} is not correct!!!")
 
-    
+            

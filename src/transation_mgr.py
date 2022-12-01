@@ -73,6 +73,9 @@ class TransactionMgr(object):
             Transaction name
         """
         self.transactions[t] = Transaction(t, tick, readOnly=True)
+        for site in self.dataMgr.get_available_sites():
+            site.request_copy_for_RO(self.transactions[t])
+
         logger.debug(f"{tick}: Start RO transaction {t}")
 
     def read(self, t, x, tick):
@@ -116,7 +119,7 @@ class TransactionMgr(object):
                     return ResultType.WL
 
             logger.debug(f"{tick}: {t} successfully read {var}")
-            logger.info(str(var))
+            logger.info(f"{t} reads - "+ str(var))
 
         else:
             ifSuccess, var = self.dataMgr.request_read(transaction, x, tick)
@@ -126,7 +129,7 @@ class TransactionMgr(object):
                 return ResultType.WL
 
             logger.debug(f"{tick}: {t} successfully read {var}")
-            logger.info(str(var))
+            logger.info(f"{t} reads - "+ str(var))
 
         return ResultType.SUCCESS
 
@@ -151,7 +154,7 @@ class TransactionMgr(object):
         """
         if t not in self.transactions:
             # abort because of deadlock
-            logger.debug(f"{t} skip end because aborted due to deadlock")
+            logger.debug(f"{t} skip `end` because aborted due to deadlock")
             return ResultType.STOP
             
         logger.debug(f"{tick}: {t} tries to write {x}: {val}...")
@@ -219,7 +222,7 @@ class TransactionMgr(object):
         """
         if t not in self.transactions:
             # abort because of deadlock
-            logger.debug(f"{t} skip end because aborted due to deadlock")
+            logger.debug(f"{t} skips `end` because aborted due to deadlock")
             return 
         else:
             transaction = self.transactions[t]
