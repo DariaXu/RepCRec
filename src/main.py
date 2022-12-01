@@ -47,7 +47,7 @@ def run(executions, dataMgr, transMgr):
 
     tick = 0
     lastResult = None
-    for exec in executions:
+    for exe in executions:
         if lastResult == ResultType.WL:
             logger.debug(f"{tick}: Detecting deadlock...")
             youngest = transMgr.waitLists.deadlock_detection()
@@ -76,7 +76,7 @@ def run(executions, dataMgr, transMgr):
                 tick += 1
                 break
             
-        opName, args = exec
+        opName, args = exe
         if opName not in operations:
             continue
         op = operations[opName]
