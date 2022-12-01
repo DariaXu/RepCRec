@@ -1,5 +1,5 @@
 ## reprozip command example on cims
-## note: change the chmod of this bash first
+## note: change the chmod of this bash first `chmod +x reprozip.bash`
 
 chmod +x reprozip
 chmod +x reprounzip
