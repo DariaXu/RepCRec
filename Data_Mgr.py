@@ -1,10 +1,21 @@
 from Site import Site
-from Variable import Variable
-from const import R_LOCK, RW_LOCK
+from const import LockState
 import logging
 import re
 
 logger = logging.getLogger(__name__)
+
+class Variable:
+    def __init__(self, name, value, onSite=None) -> None:
+        self.name = name
+        self.value = value
+        self.lastCommittedTime = -1
+        # if this variable is not a copy, onSite will be None; 
+        # otherwise, onSite will be the site number where this copy is on 
+        self.onSite = onSite
+
+    def __str__(self) -> str:
+        return f"{self.name}: {self.value}"
 
 class DataMgr(object):
     def __init__(self, numOfSites, numOfVariable) -> None:
@@ -72,6 +83,8 @@ class DataMgr(object):
     
     def get_available_sites_for_variable(self, x): 
         """
+        Get all sites that is active and contain x.
+
         Parameters:
             x: variable name
         Returns:
@@ -80,7 +93,7 @@ class DataMgr(object):
 
         # varNum = int(x[x.find('.')+1:])
         siteIndex = self.get_site_index(x)
-        if siteIndex:
+        if siteIndex != None:
             # odd variable only on one site
             site=self.sites[siteIndex]
             if site.isActive and site.ifContains(x):
@@ -106,29 +119,31 @@ class DataMgr(object):
         logger.debug(f"{transaction.name} requests read only on variable {x}.")
         sites = self.get_available_sites_for_variable(x)
         if not sites:
-            logger.debug(f"{transaction.name} fail to read only on variable {x}! No available sites.")
+            # no available site is up, need to wait if variable is not replicated
+            logger.debug(f"{transaction.name} fail to read only on variable {x}! No active sites.")
             return None
 
-        if self.get_site_index(x):
+        if self.get_site_index(x) != None:
             # odd variable
             return sites[0].read(transaction, x)
         
         # Replicated variable
         for site in sites:
-            if site.if_available_to_read(transaction, x, ifLockNeeded=False):
+            if site.if_available_to_read(transaction, x):
                 # read the first available  
                 return site.read(transaction, x)
 
         logger.debug(f"{transaction.name} fail to read only on variable {x}! Can't be read on sites {sites}.")
         return None
 
-    def request_read(self, transaction, x):
+    def request_read(self, transaction, x, tick):
         """
         Request read operation.
 
         Parameters:
             transaction: transaction object
             x: variable name
+            tick: current tick
         Returns:
             The value of variable x if read successfully; None otherwise
         """
@@ -136,17 +151,62 @@ class DataMgr(object):
         logger.debug(f"{transaction.name} requests read on variable {x}.")
         sites = self.get_available_sites_for_variable(x)
         if not sites:
-            logger.debug(f"{transaction.name} fail to read on variable {x}! No available sites.")
-            return None
+            # All sites 
+            logger.debug(f"{transaction.name} fail to read on variable {x}! No active sites.")
+            return (False, [])
+
+        blocked = []
+        for site in sites:
+            if site.if_available_to_read(transaction, x):
+                blocked = site.lock_variable(transaction, x, LockState.R_LOCK, tick)
+                if not blocked:
+                    return (True, site.read(transaction, x))
+                
+        logger.debug(f"{transaction.name} fail to read on variable {x}! Can't be read on sites {sites}.")
+        return (False, blocked)
+
+    def request_write(self, transaction, x, val, tick):
+        """
+        Request write operation.
+
+        Parameters:
+            transaction: transaction object
+            x: name of the variable to write
+            val: the value to write
+            tick: current tick
+        Returns:
+            True if success; false if fail
+        """
+        logger.debug(f"{transaction.name} requests write on variable {x}: {val}.")
+        sites = self.get_available_sites_for_variable(x)
+        if not sites:
+            logger.debug(f"{transaction.name} fail to write on variable {x}! No active sites.")
+            return (False, [])
+
+        blocked = []
+        for site in sites:
+            blocked += site.get_rw_lock_block(transaction, x)
+
+        if blocked:
+            # can't require write lock on all sites
+            return (False, blocked)
 
         for site in sites:
-            if site.if_available_to_read(transaction, x, ifLockNeeded=True):
-                site.lock_variable(transaction, x, R_LOCK)
-                return site.read(transaction, x) 
+            site.lock_variable(transaction, x, LockState.RW_LOCK, tick)
+            site.write(transaction, x, val)
 
-        logger.debug(f"{transaction.name} fail to read on variable {x}! Can't be read on sites {sites}.")
-        return None
+        return (True, [])
 
+    def abort_on_all_sites(self, transaction):
+        """
+        Request to abort transaction.
 
-    
-        
+        Parameters:
+            transaction: transaction object
+        """
+
+        logger.debug(f"Abort {transaction.name} on all sites.")
+
+        sites = self.get_available_sites()
+        for site in sites:
+            site.abort(transaction)
