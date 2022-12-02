@@ -1,5 +1,5 @@
-T1 reads on Site 1 - x2: 20
-T2 reads on Site 1 - x2: 20
+T1 reads - x2: 20
+T2 reads - x2: 20
 Transaction T2 blocked by a lock conflict. Locks: [T1]
 Commit: T1
 Site 1: T2 write x2=10

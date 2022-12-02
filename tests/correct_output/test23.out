@@ -1,6 +1,6 @@
 Site 2: T2 write x1=15
 Transaction T1 blocked by a lock conflict. Locks: [T2]
-T2 reads on Site 1 - x6: 60
+T2 reads - x6: 60
 Transaction T3 blocked by a lock conflict. Locks: [T2]
 Site 1: T4 write x8=12
 Site 2: T4 write x8=12
@@ -15,9 +15,9 @@ Site 10: T4 write x8=12
 Transaction T2 blocked by a lock conflict. Locks: [T4]
 Transaction T4 blocked by a lock conflict. Locks: [T2]
 Abort: T4
-T2 reads on Site 1 - x8: 80
+T2 reads - x8: 80
 Commit: T2
-T1 reads on Site 2 - x1: 10
+T1 reads - x1: 15
 Commit: T1
 Site 1: T3 write x6=22
 Site 2: T3 write x6=22
@@ -30,7 +30,7 @@ Site 8: T3 write x6=22
 Site 9: T3 write x6=22
 Site 10: T3 write x6=22
 Site 1 - x2: 20, x4: 40, x6: 60, x8: 80, x10: 100, x12: 120, x14: 140, x16: 160, x18: 180, x20: 200
-Site 2 - x1: 10, x2: 20, x4: 40, x6: 60, x8: 80, x10: 100, x11: 110, x12: 120, x14: 140, x16: 160, x18: 180, x20: 200
+Site 2 - x1: 15, x2: 20, x4: 40, x6: 60, x8: 80, x10: 100, x11: 110, x12: 120, x14: 140, x16: 160, x18: 180, x20: 200
 Site 3 - x2: 20, x4: 40, x6: 60, x8: 80, x10: 100, x12: 120, x14: 140, x16: 160, x18: 180, x20: 200
 Site 4 - x2: 20, x3: 30, x4: 40, x6: 60, x8: 80, x10: 100, x12: 120, x13: 130, x14: 140, x16: 160, x18: 180, x20: 200
 Site 5 - x2: 20, x4: 40, x6: 60, x8: 80, x10: 100, x12: 120, x14: 140, x16: 160, x18: 180, x20: 200

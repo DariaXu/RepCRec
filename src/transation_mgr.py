@@ -127,7 +127,7 @@ class TransactionMgr(object):
                     return ResultType.WL
 
             logger.debug(f"{tick}: {t} successfully read {var}")
-            # logger.info(f"{t} reads - "+ str(var))
+            logger.info(f"{t} reads - "+ str(var))
 
         else:
             ifSuccess, var = self.dataMgr.request_read(transaction, x, tick)

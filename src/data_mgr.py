@@ -146,7 +146,7 @@ class DataMgr(object):
         if self.get_site_index(x) != None:
             # odd variable
             var = sites[0].read_only(transaction, x)
-            logger.info(f"{transaction.name} reads on Site {sites[0].name} - "+ str(var))
+            # logger.info(f"{transaction.name} reads on Site {sites[0].name} - "+ str(var))
             return var
         
         # Replicated variable
@@ -156,7 +156,7 @@ class DataMgr(object):
             if site.if_available_to_read_only(transaction, x):
                 # read the first available  
                 var = site.read_only(transaction, x)
-                logger.info(f"{transaction.name} reads on Site {site.name} - "+ str(var))
+                # logger.info(f"{transaction.name} reads on Site {site.name} - "+ str(var))
                 return var
 
         logger.debug(f"{transaction.name} fail to read only on variable {x}! Can't be read on sites {sites}.")

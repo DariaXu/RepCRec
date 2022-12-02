@@ -1,4 +1,4 @@
-T1 reads on Site 2 - x1: 10
+T1 reads - x1: 10
 Site 1: T2 write x8=88
 Site 3: T2 write x8=88
 Site 4: T2 write x8=88
@@ -8,7 +8,7 @@ Site 7: T2 write x8=88
 Site 8: T2 write x8=88
 Site 9: T2 write x8=88
 Site 10: T2 write x8=88
-T2 reads on Site 4 - x3: 30
+T2 reads - x3: 30
 Commit: T2
 Abort: T1
 Site 1 - x2: 20, x4: 40, x6: 60, x8: 88, x10: 100, x12: 120, x14: 140, x16: 160, x18: 180, x20: 200
