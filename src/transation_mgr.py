@@ -38,6 +38,9 @@ class Transaction(object):
 
     def __repr__(self) -> str:
         return f"{self.name}"
+
+    def __lt__(self, other):
+         return self.name < other.name
     
 class TransactionMgr(object):
     def __init__(self, dataMgr) -> None:

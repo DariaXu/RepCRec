@@ -1,0 +1,23 @@
+Site 1: T1 write x2=9
+Site 2: T1 write x2=9
+Site 3: T1 write x2=9
+Site 4: T1 write x2=9
+Site 5: T1 write x2=9
+Site 6: T1 write x2=9
+Site 7: T1 write x2=9
+Site 8: T1 write x2=9
+Site 9: T1 write x2=9
+Site 10: T1 write x2=9
+Abort: T1
+Site 2: T3 write x2=100
+Site 3: T3 write x2=100
+Site 4: T3 write x2=100
+Site 5: T3 write x2=100
+Site 6: T3 write x2=100
+Site 7: T3 write x2=100
+Site 8: T3 write x2=100
+Site 9: T3 write x2=100
+Site 10: T3 write x2=100
+Commit: T3
+Transaction T2 blocked because site is down.
+Site 1: T5 write x2=90

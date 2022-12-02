@@ -2,7 +2,7 @@ import os
 import filecmp
 from os.path import exists
 
-numOfTest = [i for i in range(1,4)]+[3.5, 3.7] + [i for i in range(4,33)]
+numOfTest = [i for i in range(1,4)]+[3.5, 3.7] + [i for i in range(4,52)]
 
 for test in numOfTest:
     testFile = "tests\\test"+str(test)+ ".txt"
