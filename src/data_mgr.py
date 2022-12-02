@@ -274,7 +274,7 @@ class DataMgr(object):
                 logger.info(var)
 
 
-    def dump_all_sites(self,):
+    def dump_all_sites(self):
         """ dump """
         for name, site in self.sites.items():
             variables = list(site.committedVariables.keys())
