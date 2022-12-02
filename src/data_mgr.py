@@ -48,7 +48,7 @@ class DataMgr(object):
         -----------
         None if x is on multiple sites; site index if x is not replicated 
         """
-        siteNum = int(re.split('(\d+)',x)[1])
+        siteNum = int(re.split('(\d+)',x)[1]) % 10
         # siteNum = int(x[x.find('.')+1:])
         if siteNum % 2:
             return str(siteNum+1)
@@ -267,6 +267,12 @@ class DataMgr(object):
         for site in sites:
             site.commit(transaction, tick)
 
+    def dump_var(self, varName):
+        for name, site in self.sites.items():
+            if varName in site.committedVariables:
+                var = f'Site {name} - '+ str(site.committedVariables[varName])
+                logger.info(var)
+
 
     def dump_all_sites(self):
         """ dump """
@@ -280,3 +286,4 @@ class DataMgr(object):
                 strVars += str(site.committedVariables[v]) + ", "
 
             logger.info(strVars[:-2])
+

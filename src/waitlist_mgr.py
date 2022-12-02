@@ -95,6 +95,7 @@ class WaitList(object):
         if waitObj in self.waitList:
             return
         self.waitList.append(waitObj)
+        t.isBlocked = True
         logger.debug(f"Transaction {t} blocked by {waitObj.blockedBy}, added to wait list. {op}({args})")
 
         if blockedBy:
@@ -140,7 +141,7 @@ class WaitList(object):
                 
         if not youngest:
             logger.debug(f"No Deadlock Detected!")
-        return youngest
+        return set(youngest)
 
     def _if_deadlock(self, waitingT, path):
         waitObj = self.get_waitObj_of_t(waitingT)

@@ -107,15 +107,23 @@ class TransactionMgr(object):
             logger.debug(f"{tick}: {t} aborted, will not process read")
             return ResultType.STOP
 
+        # if transaction.isBlocked:
+        #     logger.debug(f"{tick}: {t} already blocked, will add to wait list")
+        #     self.waitLists.add_to_waitList(transaction, OperationType.READ, [t,x], blockedBy=[])
+        #     return ResultType.WL
+
         if transaction.readOnly:
             var = self.dataMgr.request_read_only(transaction, x)
             if var == None:
                 if self.dataMgr.get_site_index(x) == None:
                     # replicated variable
-                    self.abort(t, tick)
+                    # abort immediately 
+                    # self.abort(transaction, tick)
+                    # abort at "end"
+                    transaction.abort = True
                     return ResultType.ABORT
                 else:
-                    self.waitLists.add_to_waitList(transaction, OperationType.READ, [t,x], blockedBy=None)
+                    self.waitLists.add_to_waitList(transaction, OperationType.READ, [t,x], blockedBy=[])
                     return ResultType.WL
 
             logger.debug(f"{tick}: {t} successfully read {var}")
@@ -164,6 +172,11 @@ class TransactionMgr(object):
             logger.debug(f"{tick}: {t} aborted, will not process write")
             return ResultType.STOP
 
+        # if transaction.isBlocked:
+        #     logger.debug(f"{tick}: {t} already blocked, will add to wait list")
+        #     self.waitLists.add_to_waitList(transaction, OperationType.READ, [t,x], blockedBy=[])
+        #     return ResultType.WL
+
         ifSuccess, var = self.dataMgr.request_write(transaction, x, val, tick)
         if not ifSuccess:       
             self.waitLists.add_to_waitList(transaction, OperationType.WRITE, [t,x,val], blockedBy=var)
@@ -201,11 +214,14 @@ class TransactionMgr(object):
             Current tick
         """
         logger.debug(f"{tick}: Receive request to commit {t}.")
+        if self.waitLists.get_waitObj_of_t(t):
+            logger.debug(f"{tick}: {t} There are pending executions, will abort!")
+            self.abort(t, tick)
+            return
+            # logger.error(f"{tick}: {t} There are pending executions, please check!")
+
         self.dataMgr.commit_on_all_sites(t, tick)
         self.transactions.pop(t.name)
-
-        if self.waitLists.get_waitObj_of_t(t):
-            logger.error(f"{tick}: {t} There are pending executions, please check!")
 
         logger.info(f"Commit: {t.name}")
 
@@ -231,5 +247,8 @@ class TransactionMgr(object):
         else:
             self.commit(transaction, tick)
         
-    def dump(self):
-        self.dataMgr.dump_all_sites()
+    def dump(self, varName=None):
+        if varName != None:
+            self.dataMgr.dump_var(varName)
+        else:
+            self.dataMgr.dump_all_sites()
