@@ -26,11 +26,11 @@ class DataMgr(object):
         The odd indexed variables are at one site each. Even indexed variables are at all sites. 
         Each variable xi is initialized to the value 10i (10 times i).
         """
-        oddVars = [Variable("x"+str(i), 10*i) for i in range(1,numOfVariable+1) if not i%2]
+        # oddVars = [Variable("x"+str(i), 10*i) for i in range(1,numOfVariable+1) if not i%2]
 
         for site in range(1, numOfSites+1):
-            evenVars = [Variable("x"+str(i), 10*i, site) for i in range(1,numOfVariable+1) if not i%2]
-            oddVars = [Variable("x"+str(i), 10*i) for i in range(1,numOfVariable+1) if i%2 and (i%10 +1) == site]
+            evenVars = [Variable("x"+str(i), 10*i, isReplicated=True) for i in range(1,numOfVariable+1) if not i%2]
+            oddVars = [Variable("x"+str(i), 10*i, isReplicated=False) for i in range(1,numOfVariable+1) if i%2 and (i%10 +1) == site]
             curSite = Site(str(site), evenVars+oddVars)
             curSite.isActive = True
             self.sites[str(site)] = curSite
