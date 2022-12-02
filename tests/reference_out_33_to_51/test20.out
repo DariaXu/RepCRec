@@ -1,0 +1,63 @@
+INFO - 2017-12-08 18:03:41,011 - Site 1 failed
+INFO - 2017-12-08 18:03:41,011 - Site 2 failed
+INFO - 2017-12-08 18:03:41,011 - Site 4 failed
+INFO - 2017-12-08 18:03:41,011 - Site 6 failed
+INFO - 2017-12-08 18:03:41,011 - Site 8 failed
+INFO - 2017-12-08 18:03:41,011 - Site 10 failed
+INFO - 2017-12-08 18:03:41,011 - Starting T1
+INFO - 2017-12-08 18:03:41,011 - T1 is waiting on x3
+INFO - 2017-12-08 18:03:41,011 - T1 got read lock on x4 having value 40
+INFO - 2017-12-08 18:03:41,011 - T1 is waiting on x5
+INFO - 2017-12-08 18:03:41,012 - Site 4 recovered
+INFO - 2017-12-08 18:03:41,012 - Site 6 recovered
+INFO - 2017-12-08 18:03:41,012 - Although, the site holding x3 is recovering, T1 got read lock on x3 having value 30 since its the only copy
+INFO - 2017-12-08 18:03:41,012 - Although, the site holding x5 is recovering, T1 got read lock on x5 having value 50 since its the only copy
+INFO - 2017-12-08 18:03:41,012 - T1 read the value 40 of variable x4
+INFO - 2017-12-08 18:03:41,012 - T1 read the value 30 of variable x3
+INFO - 2017-12-08 18:03:41,012 - T1 read the value 50 of variable x5
+INFO - 2017-12-08 18:03:41,012 - T1 committed
+INFO - 2017-12-08 18:03:41,012 - Clearing locks for T1 variable: x3
+INFO - 2017-12-08 18:03:41,012 - Clearing locks for T1 variable: x4
+INFO - 2017-12-08 18:03:41,012 - Clearing locks for T1 variable: x5
+INFO - 2017-12-08 18:03:41,012 - === Site 1 ===
+INFO - 2017-12-08 18:03:41,012 - This site is down
+INFO - 2017-12-08 18:03:41,012 - === Site 2 ===
+INFO - 2017-12-08 18:03:41,013 - This site is down
+INFO - 2017-12-08 18:03:41,013 - === Site 3 ===
+INFO - 2017-12-08 18:03:41,013 - All other variables have same initial value
+INFO - 2017-12-08 18:03:41,013 - === Site 4 ===
+INFO - 2017-12-08 18:03:41,013 - x2: is not available for reading
+INFO - 2017-12-08 18:03:41,013 - x3: 30 (available at site 4 for reading as it is the only copy or has been written after recovery)
+INFO - 2017-12-08 18:03:41,013 - x4: is not available for reading
+INFO - 2017-12-08 18:03:41,013 - x6: is not available for reading
+INFO - 2017-12-08 18:03:41,013 - x8: is not available for reading
+INFO - 2017-12-08 18:03:41,013 - x10: is not available for reading
+INFO - 2017-12-08 18:03:41,013 - x12: is not available for reading
+INFO - 2017-12-08 18:03:41,013 - x13: 130 (available at site 4 for reading as it is the only copy or has been written after recovery)
+INFO - 2017-12-08 18:03:41,013 - x14: is not available for reading
+INFO - 2017-12-08 18:03:41,013 - x16: is not available for reading
+INFO - 2017-12-08 18:03:41,013 - x18: is not available for reading
+INFO - 2017-12-08 18:03:41,014 - x20: is not available for reading
+INFO - 2017-12-08 18:03:41,014 - === Site 5 ===
+INFO - 2017-12-08 18:03:41,014 - All other variables have same initial value
+INFO - 2017-12-08 18:03:41,014 - === Site 6 ===
+INFO - 2017-12-08 18:03:41,014 - x2: is not available for reading
+INFO - 2017-12-08 18:03:41,014 - x4: is not available for reading
+INFO - 2017-12-08 18:03:41,014 - x5: 50 (available at site 6 for reading as it is the only copy or has been written after recovery)
+INFO - 2017-12-08 18:03:41,014 - x6: is not available for reading
+INFO - 2017-12-08 18:03:41,014 - x8: is not available for reading
+INFO - 2017-12-08 18:03:41,014 - x10: is not available for reading
+INFO - 2017-12-08 18:03:41,014 - x12: is not available for reading
+INFO - 2017-12-08 18:03:41,014 - x14: is not available for reading
+INFO - 2017-12-08 18:03:41,014 - x15: 150 (available at site 6 for reading as it is the only copy or has been written after recovery)
+INFO - 2017-12-08 18:03:41,014 - x16: is not available for reading
+INFO - 2017-12-08 18:03:41,014 - x18: is not available for reading
+INFO - 2017-12-08 18:03:41,014 - x20: is not available for reading
+INFO - 2017-12-08 18:03:41,014 - === Site 7 ===
+INFO - 2017-12-08 18:03:41,014 - All other variables have same initial value
+INFO - 2017-12-08 18:03:41,014 - === Site 8 ===
+INFO - 2017-12-08 18:03:41,014 - This site is down
+INFO - 2017-12-08 18:03:41,014 - === Site 9 ===
+INFO - 2017-12-08 18:03:41,014 - All other variables have same initial value
+INFO - 2017-12-08 18:03:41,015 - === Site 10 ===
+INFO - 2017-12-08 18:03:41,015 - This site is down

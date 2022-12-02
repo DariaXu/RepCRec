@@ -1,0 +1,39 @@
+INFO - 2017-12-07 20:43:56,916 - Starting read only transaction T1
+INFO - 2017-12-07 20:43:56,916 - Site 4 failed
+INFO - 2017-12-07 20:43:56,916 - Site 4 recovered
+INFO - 2017-12-07 20:43:56,917 - T1 read the value 10 of variable x1
+INFO - 2017-12-07 20:43:56,917 - T1 read the value 20 of variable x2
+INFO - 2017-12-07 20:43:56,917 - T1 read the value 30 of variable x3
+INFO - 2017-12-07 20:43:56,917 - T1 read the value 30 of variable x3
+INFO - 2017-12-07 20:43:56,917 - T1 committed
+INFO - 2017-12-07 20:43:56,917 - === Site 1 ===
+INFO - 2017-12-07 20:43:56,917 - All other variables have same initial value
+INFO - 2017-12-07 20:43:56,917 - === Site 2 ===
+INFO - 2017-12-07 20:43:56,917 - All other variables have same initial value
+INFO - 2017-12-07 20:43:56,917 - === Site 3 ===
+INFO - 2017-12-07 20:43:56,917 - All other variables have same initial value
+INFO - 2017-12-07 20:43:56,917 - === Site 4 ===
+INFO - 2017-12-07 20:43:56,917 - x2: is not available for reading
+INFO - 2017-12-07 20:43:56,917 - x3: 30 (available at site 4 for reading as it is the only copy or has been written after recovery)
+INFO - 2017-12-07 20:43:56,917 - x4: is not available for reading
+INFO - 2017-12-07 20:43:56,917 - x6: is not available for reading
+INFO - 2017-12-07 20:43:56,917 - x8: is not available for reading
+INFO - 2017-12-07 20:43:56,917 - x10: is not available for reading
+INFO - 2017-12-07 20:43:56,917 - x12: is not available for reading
+INFO - 2017-12-07 20:43:56,917 - x13: 130 (available at site 4 for reading as it is the only copy or has been written after recovery)
+INFO - 2017-12-07 20:43:56,917 - x14: is not available for reading
+INFO - 2017-12-07 20:43:56,917 - x16: is not available for reading
+INFO - 2017-12-07 20:43:56,918 - x18: is not available for reading
+INFO - 2017-12-07 20:43:56,918 - x20: is not available for reading
+INFO - 2017-12-07 20:43:56,918 - === Site 5 ===
+INFO - 2017-12-07 20:43:56,918 - All other variables have same initial value
+INFO - 2017-12-07 20:43:56,918 - === Site 6 ===
+INFO - 2017-12-07 20:43:56,918 - All other variables have same initial value
+INFO - 2017-12-07 20:43:56,918 - === Site 7 ===
+INFO - 2017-12-07 20:43:56,918 - All other variables have same initial value
+INFO - 2017-12-07 20:43:56,918 - === Site 8 ===
+INFO - 2017-12-07 20:43:56,918 - All other variables have same initial value
+INFO - 2017-12-07 20:43:56,918 - === Site 9 ===
+INFO - 2017-12-07 20:43:56,918 - All other variables have same initial value
+INFO - 2017-12-07 20:43:56,918 - === Site 10 ===
+INFO - 2017-12-07 20:43:56,918 - All other variables have same initial value

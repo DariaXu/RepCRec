@@ -1,0 +1,23 @@
+INFO - 2017-12-08 18:17:50,954 - Starting T1
+INFO - 2017-12-08 18:17:50,954 - Starting T2
+INFO - 2017-12-08 18:17:50,955 - T1 got write lock on x2
+INFO - 2017-12-08 18:17:50,955 - Site 1 failed
+INFO - 2017-12-08 18:17:50,955 - T1 aborted as site 1 failed
+INFO - 2017-12-08 18:17:50,955 - Clearing locks for T1 variable: x2
+INFO - 2017-12-08 18:17:50,955 - Starting T3
+INFO - 2017-12-08 18:17:50,955 - T3 got write lock on x2
+INFO - 2017-12-08 18:17:50,955 - T3 committed
+INFO - 2017-12-08 18:17:50,956 - Clearing locks for T3 variable: x2
+INFO - 2017-12-08 18:17:50,956 - Site 1 recovered
+INFO - 2017-12-08 18:17:50,956 - Site 2 failed
+INFO - 2017-12-08 18:17:50,956 - Site 3 failed
+INFO - 2017-12-08 18:17:50,956 - Site 4 failed
+INFO - 2017-12-08 18:17:50,956 - Site 5 failed
+INFO - 2017-12-08 18:17:50,956 - Site 6 failed
+INFO - 2017-12-08 18:17:50,956 - Site 7 failed
+INFO - 2017-12-08 18:17:50,956 - Site 8 failed
+INFO - 2017-12-08 18:17:50,956 - Site 9 failed
+INFO - 2017-12-08 18:17:50,956 - Site 10 failed
+INFO - 2017-12-08 18:17:50,956 - T2 is waiting on x2
+INFO - 2017-12-08 18:17:50,956 - Starting T5
+INFO - 2017-12-08 18:17:50,957 - T5 got write lock on x2

@@ -1,0 +1,37 @@
+INFO - 2017-12-07 20:45:26,623 - Starting T1
+INFO - 2017-12-07 20:45:26,623 - Starting T2
+INFO - 2017-12-07 20:45:26,623 - Starting T3
+INFO - 2017-12-07 20:45:26,623 - T2 got read lock on x1 having value 10
+INFO - 2017-12-07 20:45:26,623 - T1 is blocked for a write lock by T2 on x1
+INFO - 2017-12-07 20:45:26,623 - T2 read the value 10 of variable x1
+INFO - 2017-12-07 20:45:26,624 - T2 committed
+INFO - 2017-12-07 20:45:26,624 - Clearing locks for T2 variable: x1
+INFO - 2017-12-07 20:45:26,624 - T1 got write lock on x1
+INFO - 2017-12-07 20:45:26,624 - T3 is blocked by T1 on x1
+INFO - 2017-12-07 20:45:26,624 - T1 committed
+INFO - 2017-12-07 20:45:26,624 - Clearing locks for T1 variable: x1
+INFO - 2017-12-07 20:45:26,624 - T3 got read lock on x1 having value 101
+INFO - 2017-12-07 20:45:26,624 - T3 read the value 101 of variable x1
+INFO - 2017-12-07 20:45:26,624 - T3 committed
+INFO - 2017-12-07 20:45:26,624 - Clearing locks for T3 variable: x1
+INFO - 2017-12-07 20:45:26,624 - === Site 1 ===
+INFO - 2017-12-07 20:45:26,625 - All other variables have same initial value
+INFO - 2017-12-07 20:45:26,625 - === Site 2 ===
+INFO - 2017-12-07 20:45:26,625 - x1:  101 at site 2
+INFO - 2017-12-07 20:45:26,625 - All other variables have same initial value
+INFO - 2017-12-07 20:45:26,625 - === Site 3 ===
+INFO - 2017-12-07 20:45:26,625 - All other variables have same initial value
+INFO - 2017-12-07 20:45:26,625 - === Site 4 ===
+INFO - 2017-12-07 20:45:26,625 - All other variables have same initial value
+INFO - 2017-12-07 20:45:26,625 - === Site 5 ===
+INFO - 2017-12-07 20:45:26,625 - All other variables have same initial value
+INFO - 2017-12-07 20:45:26,625 - === Site 6 ===
+INFO - 2017-12-07 20:45:26,625 - All other variables have same initial value
+INFO - 2017-12-07 20:45:26,625 - === Site 7 ===
+INFO - 2017-12-07 20:45:26,625 - All other variables have same initial value
+INFO - 2017-12-07 20:45:26,625 - === Site 8 ===
+INFO - 2017-12-07 20:45:26,625 - All other variables have same initial value
+INFO - 2017-12-07 20:45:26,625 - === Site 9 ===
+INFO - 2017-12-07 20:45:26,625 - All other variables have same initial value
+INFO - 2017-12-07 20:45:26,625 - === Site 10 ===
+INFO - 2017-12-07 20:45:26,626 - All other variables have same initial value
