@@ -50,6 +50,7 @@ class Site:
             self.committedVariables[var.name] = var
         
         self.copies = {}
+        self.liningUp = {}
         self.isActive = False
         self.recoveredTime = -1
 
@@ -137,7 +138,7 @@ class Site:
         if x in self.lockTable:
             lockObjs = self.lockTable[x]
             for lock in lockObjs:
-                if lock.state == LockState.RW_LOCK and lock.transaction != transaction:
+                if (lock.state == LockState.RW_LOCK and lock.transaction != transaction) or (lock.state == LockState.R_LOCK and lock.linedUp):
                     # write lock from other transaction
                     lock.linedUp = True
                     blockedBy.append(lock.transaction)
@@ -182,6 +183,12 @@ class Site:
                     lock.linedUp = True
                     blockedBy.append(lock.transaction)
         return blockedBy
+
+    def lock_lining_up(self, transaction, x):
+        if x not in self.liningUp:
+            self.liningUp[x] = []
+
+        self.liningUp[x].append(transaction)
 
     def lock_variable(self, transaction, x, lock_state, tick):
         """

@@ -1,4 +1,4 @@
-T2 reads - x2: 20
-Transaction T1 blocked by a lock conflict.
+T2 reads on Site 1 - x2: 20
+Transaction T1 blocked by a lock conflict. Locks: [T2]
 Abort: T1
 Commit: T2

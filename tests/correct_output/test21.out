@@ -1,6 +1,6 @@
-T2 reads - x2: 20
-Transaction T1 blocked by a lock conflict.
-Transaction T2 blocked by a lock conflict.
+T2 reads on Site 1 - x2: 20
+Transaction T1 blocked by a lock conflict. Locks: [T2]
+Transaction T2 blocked by a lock conflict. Locks: [T2]
 Abort: T2
 Site 1: T1 write x2=202
 Site 2: T1 write x2=202

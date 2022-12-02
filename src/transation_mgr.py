@@ -39,10 +39,10 @@ class Transaction(object):
         return hash(tuple(self))
 
     def __str__(self) -> str:
-        return f"{self.startTime}-{self.name}"
+        return f"{self.name}"
 
     def __repr__(self) -> str:
-        return f"{self.startTime}-{self.name}"
+        return f"{self.name}"
     
 class TransactionMgr(object):
     def __init__(self, dataMgr) -> None:
@@ -127,7 +127,7 @@ class TransactionMgr(object):
                     return ResultType.WL
 
             logger.debug(f"{tick}: {t} successfully read {var}")
-            logger.info(f"{t} reads - "+ str(var))
+            # logger.info(f"{t} reads - "+ str(var))
 
         else:
             ifSuccess, var = self.dataMgr.request_read(transaction, x, tick)

@@ -145,7 +145,9 @@ class DataMgr(object):
 
         if self.get_site_index(x) != None:
             # odd variable
-            return sites[0].read_only(transaction, x)
+            var = sites[0].read_only(transaction, x)
+            logger.info(f"{transaction.name} reads on Site {sites[0].name} - "+ str(var))
+            return var
         
         # Replicated variable
         for site in sites:
@@ -153,7 +155,9 @@ class DataMgr(object):
             # if_available_to_read_only might be redundant 
             if site.if_available_to_read_only(transaction, x):
                 # read the first available  
-                return site.read_only(transaction, x)
+                var = site.read_only(transaction, x)
+                logger.info(f"{transaction.name} reads on Site {site.name} - "+ str(var))
+                return var
 
         logger.debug(f"{transaction.name} fail to read only on variable {x}! Can't be read on sites {sites}.")
         return None
@@ -190,7 +194,10 @@ class DataMgr(object):
                 # for not replicated variable, no need the check the commit time(if_available_to_read)
                 blocked = site.lock_variable(transaction, x, LockState.R_LOCK, tick)
                 if not blocked:
-                    return (True, site.read(transaction, x))
+                    var = site.read(transaction, x)
+                    # logger.info(f"{transaction.name} reads on Site {site.name} - "+ str(var))
+
+                    return (True, var)
                 
         logger.debug(f"{transaction.name} fail to read on variable {x}! Can't be read on sites {sites}.")
         return (False, blocked)

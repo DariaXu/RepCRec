@@ -1,13 +1,13 @@
-T3 reads - x3: 30
-T4 reads - x4: 40
-T5 reads - x5: 50
-T1 reads - x1: 10
-T2 reads - x2: 20
-Transaction T1 blocked by a lock conflict.
-Transaction T2 blocked by a lock conflict.
-Transaction T3 blocked by a lock conflict.
-Transaction T4 blocked by a lock conflict.
-Transaction T5 blocked by a lock conflict.
+T3 reads on Site 4 - x3: 30
+T4 reads on Site 1 - x4: 40
+T5 reads on Site 6 - x5: 50
+T1 reads on Site 2 - x1: 10
+T2 reads on Site 1 - x2: 20
+Transaction T1 blocked by a lock conflict. Locks: [T2]
+Transaction T2 blocked by a lock conflict. Locks: [T3]
+Transaction T3 blocked by a lock conflict. Locks: [T4]
+Transaction T4 blocked by a lock conflict. Locks: [T5]
+Transaction T5 blocked by a lock conflict. Locks: [T1]
 Abort: T5
 Site 6: T4 write x5=40
 Commit: T4
