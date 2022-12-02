@@ -1,7 +1,7 @@
-T2 reads - x1: 10
+T2 reads on Site 2 - x1: 10
 Site 2: T1 write x1=81
-T3 reads - x3: 30
-T4 reads - x5: 50
+T3 reads on Site 4 - x3: 30
+T4 reads on Site 6 - x5: 50
 Site 6: T4 write x5=9
 Abort: T1
 Abort: T3

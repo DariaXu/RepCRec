@@ -8,10 +8,10 @@ Site 7: T1 write x4=5
 Site 8: T1 write x4=5
 Site 9: T1 write x4=5
 Site 10: T1 write x4=5
-Transaction T2 blocked by a lock conflict. Locks: [T1, T1, T1, T1, T1, T1, T1, T1, T1]
-Transaction T3 blocked by a lock conflict. Locks: [T1, T1, T1, T1, T1, T1, T1, T1, T1]
-Transaction T4 blocked by a lock conflict. Locks: [T1, T1, T1, T1, T1, T1, T1, T1, T1]
-Transaction T5 blocked by a lock conflict. Locks: [T1, T1, T1, T1, T1, T1, T1, T1, T1]
+Transaction T2 blocked by a lock conflict. Locks: [T1]
+Transaction T3 blocked by a lock conflict. Locks: [T1]
+Transaction T4 blocked by a lock conflict. Locks: [T1]
+Transaction T5 blocked by a lock conflict. Locks: [T1]
 Abort: T1
 Site 1: T2 write x4=44
 Site 2: T2 write x4=44

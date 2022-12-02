@@ -8,7 +8,7 @@ Site 7: T2 write x2=8
 Site 8: T2 write x2=8
 Site 9: T2 write x2=8
 Site 10: T2 write x2=8
-Transaction T1 blocked by a lock conflict. Locks: [T2, T2, T2, T2, T2, T2, T2, T2, T2, T2]
+Transaction T1 blocked by a lock conflict. Locks: [T2]
 Commit: T2
 Site 1: T1 write x2=6
 Site 2: T1 write x2=6

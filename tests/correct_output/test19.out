@@ -1,8 +1,8 @@
-T3 reads - x3: 30
-T4 reads - x4: 40
-T5 reads - x5: 50
-T1 reads - x6: 60
-T2 reads - x2: 20
+T3 reads on Site 4 - x3: 30
+T4 reads on Site 1 - x4: 40
+T5 reads on Site 6 - x5: 50
+T1 reads on Site 1 - x6: 60
+T2 reads on Site 1 - x2: 20
 Transaction T1 blocked by a lock conflict. Locks: [T2]
 Site 4: T2 write x3=20
 Site 2: T5 write x1=50

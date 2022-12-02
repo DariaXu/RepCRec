@@ -28,6 +28,9 @@ class Variable:
     def __str__(self) -> str:
         return f"{self.name}: {self.value}"
 
+    def __repr__(self) -> str:
+        return f"{self.name}: {self.value}"
+
 class Site:
     def __init__(self, name, variables) -> None:
         """
@@ -118,6 +121,35 @@ class Site:
 
         return True
 
+    def lock_lining_up(self, transaction, x):
+        """
+        Store the information which transaction is waiting for a lock to release 
+
+        Parameters
+        -----------
+        transaction: Transaction Object
+		x: str
+            Variable name 
+        """
+        if x not in self.liningUp:
+            self.liningUp[x] = []
+
+        self.liningUp[x].append(transaction)
+
+    def remove_from_lock_lineup(self, transaction):
+        """
+        Remove from the line
+
+        Parameters
+        -----------
+        transaction: Transaction Object
+        """
+        for var, ts in self.liningUp.items():
+            if transaction in ts:
+                ts.remove(transaction)
+            self.liningUp[var] = ts
+
+
     def _get_r_lock_block(self, transaction, x):
         """
         Check whether read lock can be acquire.
@@ -138,26 +170,23 @@ class Site:
         if x in self.lockTable:
             lockObjs = self.lockTable[x]
             for lock in lockObjs:
-                if (lock.state == LockState.RW_LOCK and lock.transaction != transaction) or (lock.state == LockState.R_LOCK and lock.linedUp):
+                # write lock by other transaction
+                ifWLock = lock.state == LockState.RW_LOCK and lock.transaction != transaction
+                # some transaction is currently waiting for this lock to release
+                ifLockWaitUp = lock.state == LockState.R_LOCK and lock.linedUp
+                
+                if ifWLock or ifLockWaitUp:
                     # write lock from other transaction
                     lock.linedUp = True
                     blockedBy.append(lock.transaction)
+
+        # no lock on this variable on current site, 
+        # but some transaction is waiting to acquiring a write lock, 
+        # because there is a read lock on this variable on other site
+        if x in self.liningUp:
+            blockedBy+=self.liningUp[x]
+
         return blockedBy
-
-    # def _if_available_to_write(self, transaction, x):
-    #     """
-    #     Check if variable x is ready to write. 
-
-    #     Parameters:
-    #         transaction: transaction object
-	# 	    x: Variable name 
-	#     Returns: 
-	# 	    True if x can be write on this site; False otherwise
-    #     """
-    #     if x not in self.committedVariables:
-    #         return False
-
-    #     return True
 
     def get_rw_lock_block(self, transaction, x):
         """
@@ -183,12 +212,6 @@ class Site:
                     lock.linedUp = True
                     blockedBy.append(lock.transaction)
         return blockedBy
-
-    def lock_lining_up(self, transaction, x):
-        if x not in self.liningUp:
-            self.liningUp[x] = []
-
-        self.liningUp[x].append(transaction)
 
     def lock_variable(self, transaction, x, lock_state, tick):
         """
@@ -381,6 +404,8 @@ class Site:
         if transaction.name in self.copies:
             self.copies.pop(transaction.name)
 
+        self.remove_from_lock_lineup(transaction)
+
         for x, lockObjs in self.lockTable.items():
             newLockLst = [lock for lock in lockObjs if lock.transaction != transaction]
             self.lockTable[x] = newLockLst
@@ -400,6 +425,7 @@ class Site:
         
         if transaction in self.curReads:
             self.curReads.remove(transaction)
+
         if transaction in self.curWrites:
             allWritesDict = self.curWrites[transaction]
             for x, v in allWritesDict.items():
@@ -410,6 +436,8 @@ class Site:
 
         if transaction.name in self.copies:
             self.copies.pop(transaction.name)
+
+        self.remove_from_lock_lineup(transaction)
 
         for x, lockObjs in self.lockTable.items():
             newLockLst = [lock for lock in lockObjs if lock.transaction != transaction]
