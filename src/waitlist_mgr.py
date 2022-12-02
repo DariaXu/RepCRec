@@ -30,7 +30,9 @@ class WaitObj(object):
         yield "blockedBy", self.blockedBy
 
     def __eq__(self, other): 
-        return isinstance(other, type(self)) and tuple(self) == tuple(other)
+        return isinstance(other, type(self)) and \
+            self.operation == other.operation and self.t == other.t and \
+                self.blockedBy == other.blockedBy
 
     def __str__(self) -> str:
         return f"{self.operation[0]}({self.operation[1]})"
@@ -99,7 +101,7 @@ class WaitList(object):
         logger.debug(f"Transaction {t} blocked by {waitObj.blockedBy}, added to wait list. {op}({args})")
 
         if blockedBy:
-            logger.info(f"Transaction {t.name} blocked by a lock conflict.")
+            logger.info(f"Transaction {t.name} blocked by a lock conflict. Locks: {list(set(blockedBy))}")
         else:
             logger.info(f"Transaction {t.name} blocked because site is down.")
 

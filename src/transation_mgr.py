@@ -25,24 +25,19 @@ class Transaction(object):
         self.isBlocked = False
         self.abort = False
 
-    def __iter__(self):
-        yield "name", self.name
-        yield "startTime", self.startTime
-        yield "readOnly", self.readOnly
-        yield "isBlocked", self.isBlocked
-        yield "abort", self.abort
-
     def __eq__(self, other): 
-        return isinstance(other, type(self)) and tuple(self) == tuple(other)
+        return isinstance(other, type(self)) \
+            and self.name == other.name and self.startTime == other.startTime\
+                and self.readOnly == other.readOnly
 
     def __hash__(self):
-        return hash(tuple(self))
+        return hash((self.name, self.readOnly, self.startTime))
 
     def __str__(self) -> str:
-        return f"{self.startTime}-{self.name}"
+        return f"{self.name}"
 
     def __repr__(self) -> str:
-        return f"{self.startTime}-{self.name}"
+        return f"{self.name}"
     
 class TransactionMgr(object):
     def __init__(self, dataMgr) -> None:
@@ -127,7 +122,7 @@ class TransactionMgr(object):
                     return ResultType.WL
 
             logger.debug(f"{tick}: {t} successfully read {var}")
-            logger.info(f"{t} reads - "+ str(var))
+            # logger.info(f"{t} reads - "+ str(var))
 
         else:
             ifSuccess, var = self.dataMgr.request_read(transaction, x, tick)
@@ -137,7 +132,7 @@ class TransactionMgr(object):
                 return ResultType.WL
 
             logger.debug(f"{tick}: {t} successfully read {var}")
-            logger.info(f"{t} reads - "+ str(var))
+            # logger.info(f"{t} reads - "+ str(var))
 
         return ResultType.SUCCESS
 

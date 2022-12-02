@@ -1,5 +1,5 @@
 Transaction T1 blocked because site is down.
-T1 reads - x1: 10
+T1 reads on Site 2 - x1: 10
 Commit: T1
 Site 1 - x2: 20, x4: 40, x6: 60, x8: 80, x10: 100, x12: 120, x14: 140, x16: 160, x18: 180, x20: 200
 Site 2 - x1: 10, x2: 20, x4: 40, x6: 60, x8: 80, x10: 100, x11: 110, x12: 120, x14: 140, x16: 160, x18: 180, x20: 200
