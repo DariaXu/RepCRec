@@ -82,16 +82,18 @@ def run(executions, dataMgr, transMgr):
         op = operations[opName]
         # NOTE: now every operation function should have tick as the last parameter
         logger.debug(f"{tick}: Executing {opName}({args})...")
-        if args[0] != '':
+        if opName == 'dump' and args[0] == '':
+            op()
+        elif opName != 'dump':
             args.append(tick)
             lastResult = op(*args)
         else:
-            op()
+            op(*args)
         tick+=1 
 
 def main():
     parser = argparse.ArgumentParser(description='Replicated Concurrency Control and Recovery.')
-    parser.add_argument('testFile', nargs="?", default="tests/test20.txt", help='Test File')
+    parser.add_argument('testFile', nargs="?", default="tests/test.txt", help='Test File')
     args = parser.parse_args()
     
     utils.mkdir("./logs")

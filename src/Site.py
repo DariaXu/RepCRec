@@ -303,8 +303,8 @@ class Site:
             logger.error(f"Site {self.name} - Failed to read only: {x} is not in the copy!! {varCopy}")
             return None
 
-        if transaction not in self.curReads:
-            self.curReads.append(transaction)
+        # if transaction not in self.curReads:
+        #     self.curReads.append(transaction)
 
         return varCopy[x]
 
