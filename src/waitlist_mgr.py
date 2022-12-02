@@ -23,16 +23,11 @@ class WaitObj(object):
         for t in blockedBy:
             if t not in self.blockedBy:
                 self.blockedBy.append(t)
-    
-    def __iter__(self):
-        yield "operation", self.operation
-        yield "t", self.t
-        yield "blockedBy", self.blockedBy
 
     def __eq__(self, other): 
         return isinstance(other, type(self)) and \
-            self.operation == other.operation and self.t == other.t and \
-                self.blockedBy == other.blockedBy
+            self.operation == other.operation and self.t == other.t
+                # self.blockedBy == other.blockedBy
 
     def __str__(self) -> str:
         return f"{self.operation[0]}({self.operation[1]})"

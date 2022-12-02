@@ -5,7 +5,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 class Variable:
-    def __init__(self, name, value, onSite=None) -> None:
+    def __init__(self, name, value, isReplicated) -> None:
         """
         Initialize the Variable.
 
@@ -23,7 +23,7 @@ class Variable:
         self.name = name
         self.value = value
         self.lastCommittedTime = -1
-        self.onSite = onSite
+        self.isReplicated = isReplicated
 
     def __str__(self) -> str:
         return f"{self.name}: {self.value}"
@@ -71,11 +71,20 @@ class Site:
         -----------
         transaction: Transaction Object
         """
-        if transaction.name not in self.copies:
-            self.copies[transaction.name] = {}
-        self.copies[transaction.name] = self.committedVariables.copy()
+        # if transaction.name not in self.copies:
+        #     self.copies[transaction.name] = {}
+        # self.copies[transaction.name] = self.committedVariables.copy()
 
-        logger.debug(f"Stored copy for RO transaction {transaction}")
+        curCopies = {}
+        for committedValue in self.committedVariables.values():
+            if (committedValue.lastCommittedTime < transaction.startTime and \
+                self.recoveredTime <= committedValue.lastCommittedTime) or \
+                    not committedValue.isReplicated:
+                curCopies[committedValue.name] = committedValue
+        
+        self.copies[transaction.name] = curCopies
+
+        logger.debug(f"Stored copy for RO transaction {transaction}: {self.copies}")
 
     def if_available_to_read(self, transaction, x):
         """
@@ -116,7 +125,17 @@ class Site:
         -----------
 		True if x can be read only on this site; False otherwise
         """
-        if self.recoveredTime > transaction.startTime:
+        # site fail or recover during read only will not affect the read
+        # if self.recoveredTime > transaction.startTime:
+        #     return False
+
+        if transaction.name not in self.copies:
+            logger.debug(f"Site {self.name}: There is no copy for {transaction.name}!! {self.copies}")
+            return False
+
+        varCopy = self.copies[transaction.name]
+        if x not in varCopy:
+            logger.debug(f"Site {self.name}: {x} is not in the copy of Site {self.name} {varCopy}")
             return False
 
         return True
@@ -383,7 +402,7 @@ class Site:
         if transaction not in self.curWrites:
             self.curWrites[transaction] = {}
 
-        self.curWrites[transaction][x] = Variable(x, val)
+        self.curWrites[transaction][x] = Variable(x, val, self.committedVariables[x].isReplicated)
 
         logger.info(f"Site {self.name}: {transaction.name} write {x}={val}")
 
