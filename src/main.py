@@ -51,11 +51,38 @@ def run(executions, dataMgr, transMgr):
         if lastResult == ResultType.WL:
             logger.debug(f"{tick}: Detecting deadlock...")
             youngest = transMgr.waitLists.deadlock_detection()
-            for t in youngest:
-                # young die
-                # youngest = transMgr.waitLists.get_youngest_transaction()
-                transMgr.abort(t, tick)
+            while youngest:
+                for t in youngest:
+                    # young die
+                    # youngest = transMgr.waitLists.get_youngest_transaction()
+                    transMgr.abort(t, tick)
+                youngest = transMgr.waitLists.deadlock_detection()
 
+        # multiple executing wait list
+        # executingWL = True
+        # while executingWL:
+        #     executingWL = False
+        #     for waitObj in list(transMgr.waitLists.get_waitList()):
+        #         logger.debug(f"{tick}: Trying to execute {str(waitObj)} from wait list...")
+        #         opName, args = waitObj.operation
+        #         if opName not in operations:
+        #             continue
+        #         op = operations[opName]
+
+        #         nerArgs = args + [tick]
+        #         result = op(*nerArgs)
+        #         if result == ResultType.WL:
+        #             # keep the original wait object
+        #             logger.debug(f"{tick}: Failed to execute {str(waitObj)} from wait list")
+        #             # transMgr.waitLists.remove_last_from_waitList()
+        #         else:
+        #             logger.debug(f"{tick}: Executed {str(waitObj)} from wait list")
+        #             lastResult = result
+        #             transMgr.waitLists.remove_from_waitList(waitObj)
+        #             tick += 1
+        #             executingWL = True
+
+        # stop after successful execute one operation from wait list
         for waitObj in list(transMgr.waitLists.get_waitList()):
             logger.debug(f"{tick}: Trying to execute {str(waitObj)} from wait list...")
             opName, args = waitObj.operation
@@ -74,8 +101,8 @@ def run(executions, dataMgr, transMgr):
                 lastResult = result
                 transMgr.waitLists.remove_from_waitList(waitObj)
                 tick += 1
+
                 break
-            
         opName, args = exe
         if opName not in operations:
             continue
@@ -93,7 +120,7 @@ def run(executions, dataMgr, transMgr):
 
 def main():
     parser = argparse.ArgumentParser(description='Replicated Concurrency Control and Recovery.')
-    parser.add_argument('testFile', nargs="?", default="tests/test.txt", help='Test File')
+    parser.add_argument('testFile', nargs="?", default="tests/test50.txt", help='Test File')
     args = parser.parse_args()
     
     utils.mkdir("./logs")

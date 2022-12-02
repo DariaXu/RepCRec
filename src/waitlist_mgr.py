@@ -101,7 +101,7 @@ class WaitList(object):
         logger.debug(f"Transaction {t} blocked by {waitObj.blockedBy}, added to wait list. {op}({args})")
 
         if blockedBy:
-            logger.info(f"Transaction {t.name} blocked by a lock conflict. Locks: {list(set(blockedBy))}")
+            logger.info(f"Transaction {t.name} blocked by a lock conflict. Locks: {sorted(list(set(blockedBy)))}")
         else:
             logger.info(f"Transaction {t.name} blocked because site is down.")
 
