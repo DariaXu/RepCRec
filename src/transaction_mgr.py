@@ -1,5 +1,5 @@
 from const import OperationType, ResultType
-from waitlist_mgr import WaitList, WaitObj
+from waitlist_mgr import WaitList
 import logging
 
 logger = logging.getLogger(__name__)
