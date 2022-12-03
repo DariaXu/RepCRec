@@ -7,11 +7,12 @@ Courant Institute of Mathematical Sciences - New York University
 
 
 # Introduction
-This project aims to implement a distributed database system, which has following features:
-(1). multiversion concurrency control;  
-(2). deadlock detection (cycle detection with youngest victim selection);  
-(3). replication (available copies algorithm using strict two phase locking);  
-(4). failure recovery (under available copies algorithm).  
+This project aims to implement a distributed database system, which has following features:  
+
+(1) multiversion concurrency control;  
+(2) deadlock detection (cycle detection with youngest victim selection);  
+(3) replication (available copies algorithm using strict two phase locking);  
+(4) failure recovery (under available copies algorithm).  
 
 The program mainly consists of two parts: the data management part and the transaction management part. For further details of the design, please see [design_document.pdf](https://github.com/DariaXu/RepCRec/blob/main/Design%20Document.pdf).
 
