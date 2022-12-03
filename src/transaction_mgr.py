@@ -1,4 +1,5 @@
-"""Script that contains the class that implements the transaction manager.
+"""
+Script that contains the class that implements the transaction manager.
 
 @Author: Daria Xu (xx2085@nyu.edu).
 @Date: Dec/03/2022

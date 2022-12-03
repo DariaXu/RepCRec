@@ -1,4 +1,5 @@
-"""Script that contains the class that contains the utility functions.
+"""
+Script that contains the class that contains the utility functions.
 
 @Author: Tanran Zheng (tz408@nyu.edu).
 @Date: Dec/03/2022

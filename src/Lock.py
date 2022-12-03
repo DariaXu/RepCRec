@@ -1,4 +1,5 @@
-"""Script that contains the implementation of the lock object.
+"""
+Script that contains the implementation of the lock object.
 
 @Author: Daria Xu (xx2085@nyu.edu).
 @Date: Dec/03/2022

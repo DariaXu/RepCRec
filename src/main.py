@@ -1,4 +1,5 @@
-"""Main scripts to run the implementation of the distributed database system.
+"""
+Main scripts to run the implementation of the distributed database system.
 
 This is the final project of CSCI-GA 2423-001 (Advanced Database Systems, Fall 2022) 
 at New York University. This project aims to implement a distributed database system, 

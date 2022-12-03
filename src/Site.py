@@ -1,4 +1,5 @@
-"""Script that contains the implementation of the site object.
+"""
+Script that contains the implementation of the site object.
 
 @Author: Daria Xu (xx2085@nyu.edu).
 @Date: Dec/03/2022
