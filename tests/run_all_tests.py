@@ -9,6 +9,7 @@ def cmp_file(filename1, filename2):
     return False
 
 if __name__ == "__main__":
+    # test file name format: `test<unique_numerical_number>.txt`
     numOfTest = [f[4:-4] for f in os.listdir(TEST_FOLDER) if f.startswith('test') and f.endswith('.txt')]
 
     num_of_correct = 0

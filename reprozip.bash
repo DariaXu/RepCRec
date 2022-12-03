@@ -1,10 +1,10 @@
 ## reprozip command example on cims
-## note: change the chmod of this bash first `chmod +x reprozip.bash`
+## NOTE: change the chmod of this bash first `chmod +x reprozip.bash`
 
 chmod +x reprozip
 chmod +x reprounzip
 
-./reprozip trace python3 src/main.py tests/test1.txt
+./reprozip trace python3 tests/run_all_tests.py
 ## for shell script run: ./reprozip trace <script>.sh
 ## run ls -al, you should be able to see a file “.reprozip-trace”
 ## If you get any error during this step, run `export LC_ALL=C`

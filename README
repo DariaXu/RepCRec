@@ -22,7 +22,7 @@ The program mainly consists of two parts: the data management part and the trans
 `./src`: directory contains source code.  
 `./output`: directory contains outputs. It will be auto-created if once the program executes.
 `./logs`: directory contains logging files. It will be auto-created if once the program executes.  
-`./tests`: contains 53 test cases, test scripts (`run_tests.py`), and expected output (`./tests/correct_output`).  
+`./tests`: contains 48 test cases, test scripts (`run_all_tests.py`), and expected output (`./tests/correct_output`).  
 
 ## Modules
 
@@ -33,10 +33,13 @@ The program mainly consists of two parts: the data management part and the trans
 `Lock.py`: contains the implementation of the lock object.  
 `Site.py`: contains the implementation of the site object.  
 `utils.py`: contains utility functions. 
-`const.py`: contains constants used in this project.
+`const.py`: contains constants used in this project.  
+
+`tests/run_all_tests.py`: script to run all test cases in directory _./tests/_ and compare the results to the expected results (in _./test/correct\_output_)
 
 
-## TO RUN
+
+# TO RUN TESTS
 
 **Input format**
 Operations of transactions should be provided to the program in .txt file following the format given in the course syllabus.  
@@ -54,6 +57,6 @@ python3 src/main.py   \
 python3 tests/run_all_tests.py
 ```  
 
-Note: all test files should be placed in directory _./tests/_, named by `test<number>.txt`. **Modify** the 'numOfTest' variable in `run_all_tests.py` if more test cases are added.
+Note: all test files should be placed in directory _./tests/_, named by `test<unique_numerical_number>.txt`. **Modify** the 'TEST_FOLDER' variable in `run_all_tests.py` if test cases are stored in other directory path.
 
 -----  
