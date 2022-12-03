@@ -58,7 +58,10 @@ python3 src/main.py   \
 python3 tests/run_all_tests.py
 ```  
 
-Note: all test files should be placed in directory _./tests/_, named by `test<unique_numerical_number>.txt`. **Modify** the 'TEST_FOLDER' variable in `run_all_tests.py` if test cases are stored in other directory path.
+Note for `run_all_test.py`: 
+- all test files should be placed in directory _./tests/_, named by `test<unique_numerical_number>.txt`. 
+- **Modify** the 'TEST_FOLDER' variable in `run_all_tests.py` if test cases are stored in other directory path.
+- By default, `--stdout` flag is not used.
 
 -----  
 
