@@ -1,30 +1,54 @@
-// Test for deadlock detection.
-// Multiple SCCs.
-begin(T10)
-begin(T3)
-begin(T5)
-begin(T4)
+// 1. Failure on a single site - test that transactions can still read / write replicated data to other sites
+// 2. Failure on a single site - test that transactions cannot access unreplicated data
+// 3. Failures on multiple sites - test that transactions cannot access data if all sites have failed
+// 4. Recovery - test that unreplicated data is available immediately. Replicated data is not available until a committed write takes place
+
+
 begin(T1)
-begin(T6)
-begin(T7)
-begin(T8)
-begin(T9)
 begin(T2)
-R(T1, x1); R(T2, x2); R(T3, x3); R(T4, x4); R(T5, x5)
-R(T6, x6); R(T7, x7); R(T8, x8); R(T9, x9); R(T10, x10)
-W(T1, x2, 12); R(T10, x9)
-R(T3, x1); R(T8, x6); W(T7, x8, 78)
-W(T2, x3, 23); W(T8, x9, 89)
-W(T3, x4, 34); W(T4, x5, 45)
-W(T5, x1, 51); W(T9, x10, 90); W(T6, x7, 67); W(T10, x6, 06)
-end(T10)
-end(T9)
-end(T8)
-end(T7)
-end(T6)
-end(T1)
+beginRO(T3)
+
+dump()
+fail(1)
+fail(3)
+W(T2, x3, 10)
+fail(4)
+R(T1, x2)	// T1 reads x2 from site 2
+R(T2, x2)	// T2 reads x2 from site 2
+W(T1, x2, 10)	// T1 writes to sites 5-10
+end(T2)		// should abort because of site 4
+recover(4)
+dump()
+R(T1, x3)	// T1 reads x3 from site 4 because x3 is unreplicated (so value is available immediately after recovery)
+R(T3, x3)	// T3 reads x3 from the log in site 4 because x3 is unreplicated
+end(T1)		// should commit successfully
+end(T3)		// should commit successfully
+dump()
+
+begin(T4)
+begin(T5)
+beginRO(T6)
+fail(2)
+fail(4)
+fail(5)
+fail(6)
+fail(7)
+fail(8)
+fail(9)
+fail(10)	// all sites are down
+recover(2)	// only site live
+R(T4, x2)	// Should fail - T4 has to wait until a committed write has taken place
+W(T5, x2, 100)	// T5 writes x2 to site 2
 end(T5)
-end(T2)
-end(T4)
-end(T3)
+R(T4, x1)	// T4 reads x1 from site 2 immediately because x1 is unreplicated
+dump()
+recover(4)
+fail(2)
+dump()
+end(T4)	// T4 fails to commit because site 2 has failed
+begin(T7)
+R(T6, x4)	// T6 has to wait until a committed write to x4 takes place
+W(T7, x4, 75)	// Should succeed
+end(T7)		// Should cause T6's read to succeed - note: T6 should still read the value written before the last write
+end(T6)
 dump()
