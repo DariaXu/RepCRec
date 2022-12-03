@@ -61,3 +61,7 @@ python3 tests/run_all_tests.py
 Note: all test files should be placed in directory _./tests/_, named by `test<unique_numerical_number>.txt`. **Modify** the 'TEST_FOLDER' variable in `run_all_tests.py` if test cases are stored in other directory path.
 
 -----  
+
+# Notes
+
+Authors are listed in the docstring at the begining of each module.

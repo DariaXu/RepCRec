@@ -1,3 +1,10 @@
+"""Scripts that contains constants used in this project.
+
+@Author: Daria Xu (xx2085@nyu.edu).
+@Date: Dec/03/2022
+@Instructor: Prof. Dennis Shasha
+
+"""
 from enum import Enum
 
 NUM_OF_VARIABLES = 20

@@ -1,3 +1,11 @@
+"""Script that contains the class that implements the transaction manager.
+
+@Author: Daria Xu (xx2085@nyu.edu).
+@Date: Dec/03/2022
+@Instructor: Prof. Dennis Shasha
+
+"""
+
 from const import OperationType, ResultType
 from waitlist_mgr import WaitList
 import logging

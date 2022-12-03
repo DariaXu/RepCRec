@@ -1,3 +1,11 @@
+"""Script that contains the implementation of the site object.
+
+@Author: Daria Xu (xx2085@nyu.edu).
+@Date: Dec/03/2022
+@Instructor: Prof. Dennis Shasha
+
+"""
+
 from Lock import Lock
 from const import LockState
 import logging

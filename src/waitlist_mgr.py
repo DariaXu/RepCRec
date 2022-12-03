@@ -1,3 +1,11 @@
+"""Script that contains the class that implements the waitlist manager.
+
+@Author: Tanran Zheng (tz408@nyu.edu) and Daria Xu (xx2085@nyu.edu).
+@Date: Dec/03/2022
+@Instructor: Prof. Dennis Shasha
+
+"""
+
 import logging
 
 logger = logging.getLogger(__name__)

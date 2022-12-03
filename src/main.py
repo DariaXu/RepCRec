@@ -1,3 +1,27 @@
+"""Main scripts to run the implementation of the distributed database system.
+
+This is the final project of CSCI-GA 2423-001 (Advanced Database Systems, Fall 2022) 
+at New York University. This project aims to implement a distributed database system, 
+which has following features:  
+
+(1) multiversion concurrency control;  
+(2) deadlock detection (cycle detection with youngest victim selection);  
+(3) replication (available copies algorithm using strict two phase locking);  
+(4) failure recovery (under available copies algorithm).  
+
+
+Typical usage example (run a single input test):
+
+    python3 main.py   \
+        --testFile <PathToTestFile>  \
+        --stdout  # remove this arg to not printing out the results
+
+@Author: Tanran Zheng (tz408@nyu.edu) and Daria Xu (xx2085@nyu.edu).
+@Date: Dec/03/2022
+@Instructor: Prof. Dennis Shasha
+
+"""
+
 from data_mgr import DataMgr
 from transaction_mgr import TransactionMgr
 from const import NUM_OF_SITES, NUM_OF_VARIABLES, OperationType, ResultType

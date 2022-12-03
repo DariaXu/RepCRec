@@ -1,3 +1,11 @@
+"""Script that contains the class that implements the data manager.
+
+@Author: Tanran Zheng (tz408@nyu.edu).
+@Date: Dec/03/2022
+@Instructor: Prof. Dennis Shasha
+
+"""
+
 from Site import Site, Variable
 from const import LockState
 import logging

@@ -1,3 +1,11 @@
+"""Script that contains the implementation of the lock object.
+
+@Author: Daria Xu (xx2085@nyu.edu).
+@Date: Dec/03/2022
+@Instructor: Prof. Dennis Shasha
+
+"""
+
 class Lock(object):
     def __init__(self, state, transaction) -> None:
         self.state = state
