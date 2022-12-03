@@ -1,5 +1,5 @@
 from data_mgr import DataMgr
-from transation_mgr import TransactionMgr
+from transaction_mgr import TransactionMgr
 from const import NUM_OF_SITES, NUM_OF_VARIABLES, OperationType, ResultType
 import argparse
 import logging
@@ -120,7 +120,9 @@ def run(executions, dataMgr, transMgr):
 
 def main():
     parser = argparse.ArgumentParser(description='Replicated Concurrency Control and Recovery.')
-    parser.add_argument('testFile', nargs="?", default="tests/test.txt", help='Test File')
+    parser.add_argument('--testFile', type=str, default="tests/test1.txt", help='Path to test file.')
+    parser.add_argument('--stdout', nargs='?', type=utils.str_to_bool, const=True, default=False)
+
     args = parser.parse_args()
     
     utils.mkdir("./logs")
@@ -138,14 +140,17 @@ def main():
     filehdlr2.setFormatter(SpecialFormatter())
 
     # std out
-    # streamhdlr = logging.StreamHandler()
-    # streamhdlr.setFormatter(SpecialFormatter())
+    if args.stdout:
+        streamhdlr = logging.StreamHandler()
+        streamhdlr.setFormatter(SpecialFormatter())
+        handler = [filehdlr1, filehdlr2, streamhdlr]
+    else:
+        handler = [filehdlr1, filehdlr2]
 
     logging.basicConfig(
         # level= logging.INFO,
         level= logging.DEBUG,
-        # handlers=[filehdlr1, filehdlr2, streamhdlr],
-        handlers=[filehdlr1, filehdlr2]
+        handlers=handler
     )
 
     DM = DataMgr(NUM_OF_SITES, NUM_OF_VARIABLES)
